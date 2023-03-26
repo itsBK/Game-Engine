@@ -12,7 +12,7 @@ endif()
 project ("GameEngineCpp")
 
 # Add source to this project's executable.
-add_executable (GameEngineCpp "GameEngineCpp.cpp" "GameEngineCpp.h")
+add_executable (GameEngineCpp "src/GameEngineCpp.cpp" "src/GameEngineCpp.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET GameEngineCpp PROPERTY CXX_STANDARD 20)
