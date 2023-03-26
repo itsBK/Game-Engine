@@ -2,11 +2,13 @@
 //
 
 #include "GameEngineCpp.h"
+#include "Testing.h"
 
 using namespace std;
 
 int main()
 {
 	cout << "Hello CMake." << endl;
+	foo();
 	return 0;
 }
