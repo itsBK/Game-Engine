@@ -1,1 +1,1 @@
-add_library(Testing "Testing.cpp" "Testing.h")
+add_subdirectory(math)

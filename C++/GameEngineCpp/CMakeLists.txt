@@ -11,14 +11,15 @@ endif()
 
 project ("GameEngineCpp")
 
-add_subdirectory (src)
-
 # Add source to this project's executable.
 add_executable (GameEngineCpp "src/GameEngineCpp.cpp" "src/GameEngineCpp.h")
-target_link_libraries (GameEngineCpp Testing)
+
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET GameEngineCpp PROPERTY CXX_STANDARD 20)
+  set_property(TARGET GameEngineCpp PROPERTY CXX_STANDARD 23)
 endif()
 
 # TODO: Add tests and install targets if needed.
+
+add_subdirectory (src)
+target_link_libraries (GameEngineCpp Math)

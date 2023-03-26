@@ -1,0 +1,1 @@
+add_library(Math "Vector3.h" "Vector3.cpp")
