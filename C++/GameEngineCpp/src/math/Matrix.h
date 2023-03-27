@@ -26,13 +26,13 @@ public:
     ~Matrix3x3() {};
 
     static Matrix3x3 identity();
-    static Matrix3x3 RotateX(const double radians);
-    static Matrix3x3 RotateY(const double radians);
-    static Matrix3x3 RotateZ(const double radians);
+    static Matrix3x3 rotateX(const double radians);
+    static Matrix3x3 rotateY(const double radians);
+    static Matrix3x3 rotateZ(const double radians);
 
     Matrix3x3 operator*(const Matrix3x3& mat);
     Vector3 operator*(const Vector3& vec);
-    static Matrix3x3 Rotate(double angleX, double angleY, double angleZ,
+    static Matrix3x3 rotate(double angleX, double angleY, double angleZ,
         MultiplicationOrder order = XYZ);
 
 private:
@@ -40,7 +40,7 @@ private:
     Matrix3x3(double matrix[]);
 
 private:
-    double m_matrix[9];
+    double _matrix[9];
 
 };
 }
