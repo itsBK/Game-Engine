@@ -22,4 +22,4 @@ endif()
 # TODO: Add tests and install targets if needed.
 
 add_subdirectory (src)
-target_link_libraries (GameEngineCpp Math)
+target_link_libraries (GameEngineCpp GameEngine.Math)

@@ -1,6 +1,6 @@
 #include "Vector3.h"
 
-using namespace math;
+using namespace GameEngine::Math;
 
 Vector3::Vector3() {
     Vector3::x = 0;
@@ -17,9 +17,6 @@ Vector3::Vector3(const Vector3& other) {
     Vector3::x = other.x;
     Vector3::y = other.y;
     Vector3::z = other.z;
-}
-
-Vector3::~Vector3() {
 }
 
 Vector3 Vector3::operator=(const Vector3& other) {

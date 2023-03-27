@@ -1,1 +1,1 @@
-add_library(Math "Vector3.h" "Vector3.cpp")
+add_library(GameEngine.Math "Vector3.h" "Vector3.cpp" "Matrix.h" "Matrix.cpp")
