@@ -1,25 +1,25 @@
-﻿# CMakeList.txt : CMake project for GameEngineCpp, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.18)
+set(GameEngineProject GameEngine)
+project(${GameEngineProject}
+    VERSION 0.1
+    LANGUAGES CXX)
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+set(CMAKE_CXX_STANDARD 20)
 
-project ("GameEngineCpp")
+if(MSVC)
+    message("using MSVC")
+    add_executable (${PROJECT_NAME}
+        src/os/windows/GameEngine.cpp)
 
-# Add source to this project's executable.
-add_executable (GameEngineCpp "src/GameEngineCpp.cpp" "src/GameEngineCpp.h")
+elseif (UNIX)
+    message("using GNU")
+    add_executable (${PROJECT_NAME}
+        src/os/linux/GameEngine.cpp)
 
+endif ()
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET GameEngineCpp PROPERTY CXX_STANDARD 23)
-endif()
+target_include_directories(${PROJECT_NAME} PUBLIC src/os/include)
 
-# TODO: Add tests and install targets if needed.
+add_subdirectory(src)
 
-add_subdirectory (src)
-target_link_libraries (GameEngineCpp GameEngine.Math)
+target_link_libraries(${PROJECT_NAME} PUBLIC GameEngine.Math)
