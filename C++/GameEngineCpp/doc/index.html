@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameEngineCpp - Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>GameEngineCpp</h1>
+                <p class="version">v0.1.0-dev</p>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h2>Overview</h2>
+                    <ul>
+                        <li><a href="#introduction" class="nav-link active">Introduction</a></li>
+                        <li><a href="#architecture" class="nav-link">Architecture Overview</a></li>
+                        <li><a href="#project-structure" class="nav-link">Project Structure</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Core Systems</h2>
+                    <ul>
+                        <li><a href="#window-system" class="nav-link">Window & Display</a></li>
+                        <li><a href="#input-system" class="nav-link">Input System</a></li>
+                        <li><a href="#logging" class="nav-link">Logging System</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Rendering</h2>
+                    <ul>
+                        <li><a href="#renderer" class="nav-link">Renderer</a></li>
+                        <li><a href="#shader-system" class="nav-link">Shader System</a></li>
+                        <li><a href="#camera-system" class="nav-link">Camera System</a></li>
+                        <li><a href="#2d-renderer" class="nav-link">2D Renderer</a></li>
+                        <li><a href="#3d-renderer" class="nav-link">3D Renderer</a></li>
+                        <li><a href="#vulkan-abstraction" class="nav-link">Vulkan Abstraction</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>ECS Framework</h2>
+                    <ul>
+                        <li><a href="#ecs-core" class="nav-link">ECS Core</a></li>
+                        <li><a href="#components" class="nav-link">Components</a></li>
+                        <li><a href="#systems" class="nav-link">Systems</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Physics</h2>
+                    <ul>
+                        <li><a href="#physics-core" class="nav-link">Physics Core</a></li>
+                        <li><a href="#collision" class="nav-link">Collision Detection</a></li>
+                        <li><a href="#rigid-bodies" class="nav-link">Rigid Bodies</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Scene Management</h2>
+                    <ul>
+                        <li><a href="#scene-graph" class="nav-link">Scene Graph</a></li>
+                        <li><a href="#transform" class="nav-link">Transform System</a></li>
+                        <li><a href="#serialization" class="nav-link">Serialization</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Resources</h2>
+                    <ul>
+                        <li><a href="#asset-manager" class="nav-link">Asset Manager</a></li>
+                        <li><a href="#resource-loaders" class="nav-link">Resource Loaders</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Audio</h2>
+                    <ul>
+                        <li><a href="#audio-engine" class="nav-link">Audio Engine</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h2>Utilities</h2>
+                    <ul>
+                        <li><a href="#math-library" class="nav-link">Math Library</a></li>
+                        <li><a href="#utils" class="nav-link">Utilities</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <section id="introduction" class="doc-section">
+                <h1>Introduction</h1>
+                <p class="lead">A lightweight, modular game engine built for 2D and 3D indie game development.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Cross-Platform</h3>
+                        <p>Linux-first development with Windows support planned. Built with portability in mind.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>ECS Architecture</h3>
+                        <p>Data-oriented Entity Component System for efficient game object management.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Modern Graphics</h3>
+                        <p>OpenGL 4.x rendering with optional Vulkan abstraction layer.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📦</div>
+                        <h3>Modular Design</h3>
+                        <p>Clean separation of concerns with minimal dependencies.</p>
+                    </div>
+                </div>
+
+                <div class="uml-container">
+                    <h3>Engine Overview</h3>
+                    <svg class="uml-diagram" viewBox="0 0 800 400" id="engine-overview">
+                        <!-- Main Engine Box -->
+                        <rect x="300" y="50" width="200" height="60" class="uml-class"/>
+                        <text x="400" y="85" class="uml-title">GameEngine</text>
+                        
+                        <!-- Core Systems -->
+                        <rect x="50" y="180" width="150" height="50" class="uml-class"/>
+                        <text x="125" y="210" class="uml-title">WindowSystem</text>
+                        
+                        <rect x="220" y="180" width="150" height="50" class="uml-class"/>
+                        <text x="295" y="210" class="uml-title">InputSystem</text>
+                        
+                        <rect x="430" y="180" width="150" height="50" class="uml-class"/>
+                        <text x="505" y="210" class="uml-title">Renderer</text>
+                        
+                        <rect x="600" y="180" width="150" height="50" class="uml-class"/>
+                        <text x="675" y="210" class="uml-title">ECSSystem</text>
+                        
+                        <!-- Additional Systems -->
+                        <rect x="50" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="125" y="310" class="uml-title">PhysicsSystem</text>
+                        
+                        <rect x="220" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="295" y="310" class="uml-title">SceneGraph</text>
+                        
+                        <rect x="430" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="505" y="310" class="uml-title">AssetManager</text>
+                        
+                        <rect x="600" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="675" y="310" class="uml-title">AudioEngine</text>
+                        
+                        <!-- Connections -->
+                        <line x1="400" y1="110" x2="125" y2="180" class="uml-line"/>
+                        <line x1="400" y1="110" x2="295" y2="180" class="uml-line"/>
+                        <line x1="400" y1="110" x2="505" y2="180" class="uml-line"/>
+                        <line x1="400" y1="110" x2="675" y2="180" class="uml-line"/>
+                        
+                        <line x1="125" y1="230" x2="125" y2="280" class="uml-line-dashed"/>
+                        <line x1="295" y1="230" x2="295" y2="280" class="uml-line-dashed"/>
+                        <line x1="505" y1="230" x2="505" y2="280" class="uml-line-dashed"/>
+                        <line x1="675" y1="230" x2="675" y2="280" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="architecture" class="doc-section">
+                <h1>Architecture Overview</h1>
+                
+                <div class="arch-layers">
+                    <div class="layer" data-layer="1">
+                        <h3>Layer 1: Application</h3>
+                        <p>Game logic, scenes, scripts, gameplay systems</p>
+                    </div>
+                    <div class="layer" data-layer="2">
+                        <h3>Layer 2: Core Systems</h3>
+                        <p>ECS, Physics, Scene Graph, Audio</p>
+                    </div>
+                    <div class="layer" data-layer="3">
+                        <h3>Layer 3: Rendering</h3>
+                        <p>Renderer, Shaders, Materials, Cameras</p>
+                    </div>
+                    <div class="layer" data-layer="4">
+                        <h3>Layer 4: Platform</h3>
+                        <p>Window, Input, File System, Logging</p>
+                    </div>
+                    <div class="layer" data-layer="5">
+                        <h3>Layer 5: Math & Utilities</h3>
+                        <p>Vector/Matrix math, containers, utilities</p>
+                    </div>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>Design Principle:</strong> Each layer only depends on layers below it. Higher-level systems should never directly access lower-level details.
+                </div>
+            </section>
+
+            <section id="project-structure" class="doc-section">
+                <h1>Project Structure</h1>
+                
+                <pre class="code-block"><code>GameEngineCpp/
+├── src/
+│   ├── core/           # Core engine systems
+│   │   ├── Window.cpp/hpp
+│   │   ├── Input.cpp/hpp
+│   │   ├── Logger.cpp/hpp
+│   │   └── Engine.cpp/hpp
+│   ├── ecs/            # Entity Component System
+│   │   ├── Entity.cpp/hpp
+│   │   ├── Component.cpp/hpp
+│   │   ├── System.cpp/hpp
+│   │   └── World.cpp/hpp
+│   ├── renderer/       # Rendering systems
+│   │   ├── Renderer.cpp/hpp
+│   │   ├── Shader.cpp/hpp
+│   │   ├── Material.cpp/hpp
+│   │   ├── Mesh.cpp/hpp
+│   │   ├── Camera.cpp/hpp
+│   │   ├── Texture.cpp/hpp
+│   │   └── vulkan/     # Vulkan abstraction
+│   ├── physics/        # Physics engine
+│   │   ├── PhysicsWorld.cpp/hpp
+│   │   ├── RigidBody.cpp/hpp
+│   │   └── Collider.cpp/hpp
+│   ├── scene/          # Scene management
+│   │   ├── Scene.cpp/hpp
+│   │   ├── Node.cpp/hpp
+│   │   └── Serializer.cpp/hpp
+│   ├── assets/         # Resource management
+│   │   ├── AssetManager.cpp/hpp
+│   │   └── loaders/
+│   ├── audio/          # Audio system
+│   │   └── AudioEngine.cpp/hpp
+│   └── math/           # Math library (existing)
+│       ├── Vec2.cpp/hpp
+│       ├── Vec3.cpp/hpp
+│       ├── Matrix3x3.cpp/hpp
+│       └── ...
+├── doc/                # Documentation
+│   ├── index.html
+│   ├── styles.css
+│   └── script.js
+└── examples/           # Example games
+    └── Pong/</code></pre>
+            </section>
+
+            <section id="window-system" class="doc-section">
+                <h1>Window & Display System</h1>
+                <p>Handles window creation, context management, and display settings using GLFW.</p>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 300" id="window-uml">
+                        <rect x="200" y="20" width="200" height="80" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">Window</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_handle: GLFWwindow*</text>
+                        <text x="210" y="90" class="uml-member">- m_width: int</text>
+                        <text x="210" y="105" class="uml-member">- m_height: int</text>
+                        
+                        <rect x="200" y="130" width="200" height="60" class="uml-class"/>
+                        <text x="210" y="150" class="uml-member">+ create(title, w, h)</text>
+                        <text x="210" y="165" class="uml-member">+ swapBuffers()</text>
+                        <text x="210" y="180" class="uml-member">+ shouldClose(): bool</text>
+                        
+                        <rect x="50" y="230" width="150" height="50" class="uml-class"/>
+                        <text x="125" y="260" class="uml-title">DisplayMode</text>
+                        
+                        <rect x="400" y="230" width="150" height="50" class="uml-class"/>
+                        <text x="475" y="260" class="uml-title">VideoMode</text>
+                        
+                        <line x1="200" y1="270" x2="275" y2="205" class="uml-line"/>
+                        <line x1="400" y1="270" x2="325" y2="205" class="uml-line"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/core/Window.hpp
+#pragma once
+
+#include &lt;string&gt;
+#include &lt;cstdint&gt;
+
+struct GLFWwindow;
+
+namespace GameEngine {
+
+class Window {
+public:
+    Window() = default;
+    ~Window();
+    
+    bool create(const std::string& title, int width, int height);
+    void destroy();
+    void swapBuffers();
+    bool shouldClose() const;
+    
+    int getWidth() const { return m_width; }
+    int getHeight() const { return m_height; }
+    GLFWwindow* getHandle() const { return m_handle; }
+    
+private:
+    GLFWwindow* m_handle = nullptr;
+    int m_width = 0;
+    int m_height = 0;
+};
+
+}</code></pre>
+
+                <h2>Responsibilities</h2>
+                <ul class="feature-list">
+                    <li>Create and manage GLFW window</li>
+                    <li>Handle OpenGL context creation</li>
+                    <li>Manage display modes and VSYNC</li>
+                    <li>Provide window event callbacks</li>
+                    <li>Handle window resize events</li>
+                </ul>
+            </section>
+
+            <section id="input-system" class="doc-section">
+                <h1>Input System</h1>
+                <p>Unified input handling for keyboard, mouse, and gamepad devices.</p>
+
+                <h2>Architecture</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 250" id="input-uml">
+                        <rect x="200" y="20" width="200" height="90" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">InputManager</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_keyStates: unordered_map</text>
+                        <text x="210" y="90" class="uml-member">- m_mouseButtons: vector</text>
+                        <text x="210" y="105" class="uml-member">- m_gamepads: vector&lt;Gamepad&gt;</text>
+                        
+                        <rect x="50" y="150" width="130" height="80" class="uml-class"/>
+                        <text x="115" y="175" class="uml-title">Keyboard</text>
+                        <line x1="50" y1="185" x2="180" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ isKeyDown(key)</text>
+                        <text x="60" y="215" class="uml-member">+ isKeyPressed(key)</text>
+                        
+                        <rect x="235" y="150" width="130" height="80" class="uml-class"/>
+                        <text x="300" y="175" class="uml-title">Mouse</text>
+                        <line x1="235" y1="185" x2="365" y2="185" class="uml-divider"/>
+                        <text x="245" y="200" class="uml-member">+ getPosition(): Vec2</text>
+                        <text x="245" y="215" class="uml-member">+ isButtonDown(btn)</text>
+                        
+                        <rect x="420" y="150" width="130" height="80" class="uml-class"/>
+                        <text x="485" y="175" class="uml-title">Gamepad</text>
+                        <line x1="420" y1="185" x2="550" y2="185" class="uml-divider"/>
+                        <text x="430" y="200" class="uml-member">+ getAxis(axis)</text>
+                        <text x="430" y="215" class="uml-member">+ isButtonDown(btn)</text>
+                        
+                        <line x1="300" y1="110" x2="115" y2="150" class="uml-line"/>
+                        <line x1="300" y1="110" x2="300" y2="150" class="uml-line"/>
+                        <line x1="300" y1="110" x2="485" y2="150" class="uml-line"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/core/Input.hpp
+#pragma once
+
+#include "math/Vec2.hpp"
+#include &lt;unordered_map&gt;
+#include &lt;functional&gt;
+
+namespace GameEngine {
+
+enum class KeyCode {
+    Space, A, B, C, /* ... */
+    Count
+};
+
+enum class MouseButton {
+    Left, Right, Middle,
+    Count
+};
+
+class InputManager {
+public:
+    static InputManager& get();
+    
+    void init();
+    void update();
+    void shutdown();
+    
+    bool isKeyDown(KeyCode key) const;
+    bool isKeyPressed(KeyCode key) const;
+    bool isMouseButtonDown(MouseButton button) const;
+    
+    Vec2 getMousePosition() const;
+    Vec2 getMouseDelta() const;
+    
+    void setKeyCallback(std::function&lt;void(KeyCode, bool)&gt; callback);
+    
+private:
+    InputManager() = default;
+    std::unordered_map&lt;int, bool&gt; m_keyStates;
+    std::unordered_map&lt;int, bool&gt; m_prevKeyStates;
+    Vec2 m_mousePosition;
+    Vec2 m_mouseDelta;
+};
+
+}</code></pre>
+
+                <div class="info-box tip">
+                    <strong>Tip:</strong> Use event-driven input with callbacks for responsive controls, combined with polling for continuous input like movement.
+                </div>
+            </section>
+
+            <section id="logging" class="doc-section">
+                <h1>Logging System</h1>
+                <p>Thread-safe logging with multiple log levels and output destinations.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Multiple log levels: Debug, Info, Warning, Error, Fatal</li>
+                    <li>Thread-safe operation with mutex protection</li>
+                    <li>Multiple outputs: Console, File, Custom sinks</li>
+                    <li>Configurable formatting with timestamps</li>
+                    <li>Category-based filtering</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 500 200" id="logger-uml">
+                        <rect x="175" y="20" width="150" height="70" class="uml-class-primary"/>
+                        <text x="250" y="45" class="uml-title">Logger</text>
+                        <line x1="175" y1="55" x2="325" y2="55" class="uml-divider"/>
+                        <text x="185" y="75" class="uml-member">+ debug(msg)</text>
+                        <text x="185" y="90" class="uml-member">+ info(msg)</text>
+                        
+                        <rect x="50" y="130" width="100" height="50" class="uml-class"/>
+                        <text x="100" y="160" class="uml-title">ConsoleSink</text>
+                        
+                        <rect x="200" y="130" width="100" height="50" class="uml-class"/>
+                        <text x="250" y="160" class="uml-title">FileSink</text>
+                        
+                        <rect x="350" y="130" width="100" height="50" class="uml-class"/>
+                        <text x="400" y="160" class="uml-title">CustomSink</text>
+                        
+                        <line x1="250" y1="90" x2="100" y2="130" class="uml-line-dashed"/>
+                        <line x1="250" y1="90" x2="250" y2="130" class="uml-line-dashed"/>
+                        <line x1="250" y1="90" x2="400" y2="130" class="uml-line-dashed"/>
+                        
+                        <text x="200" y="195" class="uml-note">«interface» LogSink</text>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="renderer" class="doc-section">
+                <h1>Renderer</h1>
+                <p>Main rendering coordinator that manages the render pipeline and draw calls.</p>
+
+                <h2>Render Pipeline Flow</h2>
+                <div class="pipeline-flow">
+                    <div class="pipeline-stage">
+                        <div class="stage-number">1</div>
+                        <div class="stage-content">
+                            <h4>Input Assembly</h4>
+                            <p>Vertex data, indices</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">2</div>
+                        <div class="stage-content">
+                            <h4>Vertex Shader</h4>
+                            <p>Transform, skinning</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">3</div>
+                        <div class="stage-content">
+                            <h4>Geometry</h4>
+                            <p>Tessellation, primitive</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">4</div>
+                        <div class="stage-content">
+                            <h4>Fragment Shader</h4>
+                            <p>Lighting, shadows</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">5</div>
+                        <div class="stage-content">
+                            <h4>Output Merge</h4>
+                            <p>Depth, blending</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 700 350" id="renderer-uml">
+                        <rect x="250" y="20" width="200" height="100" class="uml-class-primary"/>
+                        <text x="350" y="45" class="uml-title">Renderer</text>
+                        <line x1="250" y1="55" x2="450" y2="55" class="uml-divider"/>
+                        <text x="260" y="75" class="uml-member">- mCameras: vector&lt;Camera*&gt;</text>
+                        <text x="260" y="90" class="uml-member">- mRenderQueue: RenderQueue</text>
+                        <text x="260" y="105" class="uml-member">- mShaderManager: ShaderManager</text>
+                        
+                        <rect x="50" y="180" width="150" height="70" class="uml-class"/>
+                        <text x="125" y="205" class="uml-title">RenderPass</text>
+                        <line x1="50" y1="215" x2="200" y2="215" class="uml-divider"/>
+                        <text x="60" y="235" class="uml-member">+ begin()</text>
+                        <text x="60" y="250" class="uml-member">+ execute()</text>
+                        
+                        <rect x="275" y="180" width="150" height="70" class="uml-class"/>
+                        <text x="350" y="205" class="uml-title">RenderQueue</text>
+                        <line x1="275" y1="215" x2="425" y2="215" class="uml-divider"/>
+                        <text x="285" y="235" class="uml-member">+ submit(renderable)</text>
+                        <text x="285" y="250" class="uml-member">+ sort()</text>
+                        
+                        <rect x="500" y="180" width="150" height="70" class="uml-class"/>
+                        <text x="575" y="205" class="uml-title">Renderable</text>
+                        <line x1="500" y1="215" x2="650" y2="215" class="uml-divider"/>
+                        <text x="510" y="235" class="uml-member">+ getMesh()</text>
+                        <text x="510" y="250" class="uml-member">+ getMaterial()</text>
+                        
+                        <rect x="275" y="300" width="150" height="40" class="uml-class"/>
+                        <text x="350" y="325" class="uml-title">ShaderManager</text>
+                        
+                        <line x1="350" y1="120" x2="125" y2="180" class="uml-line"/>
+                        <line x1="350" y1="120" x2="350" y2="180" class="uml-line"/>
+                        <line x1="350" y1="120" x2="575" y2="180" class="uml-line"/>
+                        <line x1="350" y1="250" x2="350" y2="300" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/renderer/Renderer.hpp
+#pragma once
+
+#include "Camera.hpp"
+#include "Mesh.hpp"
+#include "Material.hpp"
+#include "Shader.hpp"
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+namespace GameEngine {
+
+class Renderable {
+public:
+    virtual ~Renderable() = default;
+    virtual Mesh* getMesh() = 0;
+    virtual Material* getMaterial() = 0;
+    virtual Transform getTransform() = 0;
+};
+
+class Renderer {
+public:
+    static Renderer& get();
+    
+    void init();
+    void shutdown();
+    
+    void beginFrame();
+    void submit(Renderable* renderable);
+    void endFrame();
+    void render();
+    
+    void addCamera(Camera* camera);
+    void removeCamera(Camera* camera);
+    
+private:
+    Renderer() = default;
+    
+    std::vector&lt;Camera*&gt; m_cameras;
+    std::vector&lt;Renderable*&gt; m_renderQueue;
+    ShaderManager m_shaderManager;
+};
+
+}</code></pre>
+            </section>
+
+            <section id="shader-system" class="doc-section">
+                <h1>Shader System</h1>
+                <p>Manages shader compilation, linking, and uniform management for OpenGL.</p>
+
+                <h2>Shader Types</h2>
+                <div class="shader-types">
+                    <div class="shader-card">
+                        <h3>Vertex Shader</h3>
+                        <p>Transforms vertices, handles MVP matrix calculations</p>
+                    </div>
+                    <div class="shader-card">
+                        <h3>Fragment Shader</h3>
+                        <p>Per-pixel lighting, color calculations, texture sampling</p>
+                    </div>
+                    <div class="shader-card">
+                        <h3>Geometry Shader</h3>
+                        <p>Generates or modifies primitives (optional)</p>
+                    </div>
+                    <div class="shader-card">
+                        <h3>Compute Shader</h3>
+                        <p>GPGPU operations, post-processing</p>
+                    </div>
+                </div>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 280" id="shader-uml">
+                        <rect x="200" y="20" width="200" height="100" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">Shader</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_programId: uint32_t</text>
+                        <text x="210" y="90" class="uml-member">- m_uniforms: map&lt;string, int&gt;</text>
+                        <line x1="200" y1="95" x2="400" y2="95" class="uml-divider"/>
+                        <text x="210" y="110" class="uml-member">+ compile(src, type)</text>
+                        <text x="210" y="120" class="uml-member">+ link(vs, fs)</text>
+                        
+                        <rect x="50" y="180" width="150" height="80" class="uml-class"/>
+                        <text x="125" y="205" class="uml-title">ShaderProgram</text>
+                        <line x1="50" y1="215" x2="200" y2="215" class="uml-divider"/>
+                        <text x="60" y="235" class="uml-member">+ vertexShader</text>
+                        <text x="60" y="250" class="uml-member">+ fragmentShader</text>
+                        
+                        <rect x="400" y="180" width="150" height="80" class="uml-class"/>
+                        <text x="475" y="205" class="uml-title">ShaderUniform</text>
+                        <line x1="400" y1="215" x2="550" y2="215" class="uml-divider"/>
+                        <text x="410" y="235" class="uml-member">+ setFloat(name, val)</text>
+                        <text x="410" y="250" class="uml-member">+ setVec3(name, val)</text>
+                        
+                        <line x1="200" y1="120" x2="125" y2="180" class="uml-line"/>
+                        <line x1="400" y1="120" x2="475" y2="180" class="uml-line"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/renderer/Shader.hpp
+#pragma once
+
+#include "math/Vec3.hpp"
+#include "math/Matrix4x4.hpp"
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+
+namespace GameEngine {
+
+class Shader {
+public:
+    Shader() = default;
+    ~Shader();
+    
+    bool loadFromFiles(const std::string&amp; vsPath, 
+                       const std::string&amp; fsPath);
+    bool loadFromSource(const std::string&amp; vsSource,
+                        const std::string&amp; fsSource);
+    
+    void bind() const;
+    void unbind() const;
+    
+    void setUniform(const std::string&amp; name, float value);
+    void setUniform(const std::string&amp; name, const Vec3&amp; value);
+    void setUniform(const std::string&amp; name, const Matrix4x4&amp; value);
+    
+private:
+    uint32_t m_programId = 0;
+    std::unordered_map&lt;std::string, int&gt; m_uniformLocations;
+    
+    bool compile(const std::string&amp; source, uint32_t type);
+    bool link(uint32_t vs, uint32_t fs);
+    int getUniformLocation(const std::string&amp; name);
+};
+
+}</code></pre>
+            </section>
+
+            <section id="camera-system" class="doc-section">
+                <h1>Camera System</h1>
+                <p>Handles view and projection matrix calculations for both 2D and 3D rendering.</p>
+
+                <h2>Camera Types</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>Orthographic Camera (2D)</h3>
+                        <p>Parallel projection without perspective distortion. Ideal for 2D games.</p>
+                        <pre class="code-block"><code>// Orthographic projection matrix
+Matrix4x4::ortho(left, right, bottom, top, near, far)</code></pre>
+                    </div>
+                    <div>
+                        <h3>Perspective Camera (3D)</h3>
+                        <p>Realistic depth perception with vanishing points. For 3D games.</p>
+                        <pre class="code-block"><code>// Perspective projection matrix
+Matrix4x4::perspective(fov, aspect, near, far)</code></pre>
+                    </div>
+                </div>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 250" id="camera-uml">
+                        <rect x="225" y="20" width="150" height="40" class="uml-class"/>
+                        <text x="300" y="45" class="uml-title">Transform</text>
+                        
+                        <rect x="225" y="80" width="150" height="40" class="uml-class-primary"/>
+                        <text x="300" y="105" class="uml-title">Camera (base)</text>
+                        
+                        <rect x="50" y="150" width="180" height="80" class="uml-class"/>
+                        <text x="140" y="175" class="uml-title">OrthographicCamera</text>
+                        <line x1="50" y1="185" x2="230" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ zoom: float</text>
+                        <text x="60" y="215" class="uml-member">+ getProjection()</text>
+                        
+                        <rect x="370" y="150" width="180" height="80" class="uml-class"/>
+                        <text x="460" y="175" class="uml-title">PerspectiveCamera</text>
+                        <line x1="370" y1="185" x2="550" y2="185" class="uml-divider"/>
+                        <text x="380" y="200" class="uml-member">+ fov, aspect, near, far</text>
+                        <text x="380" y="215" class="uml-member">+ getProjection()</text>
+                        
+                        <line x1="300" y1="60" x2="300" y2="80" class="uml-line"/>
+                        <line x1="300" y1="120" x2="140" y2="150" class="uml-line"/>
+                        <line x1="300" y1="120" x2="460" y2="150" class="uml-line"/>
+                        
+                        <text x="220" y="245" class="uml-note">OrthographicCamera «inherits» Camera</text>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="2d-renderer" class="doc-section">
+                <h1>2D Renderer</h1>
+                <p>Specialized renderer for 2D sprites, text, and UI elements.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Sprite batching for efficient rendering</li>
+                    <li>Sprite sheets and atlases support</li>
+                    <li>Customizable shaders (basic, lighting, outline)</li>
+                    <li>Layering and sorting by depth</li>
+                    <li>Texture atlas packing</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 300" id="2d-renderer-uml">
+                        <rect x="200" y="20" width="200" height="90" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">SpriteRenderer</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_batch: SpriteBatch</text>
+                        <text x="210" y="90" class="uml-member">- m_texture: Texture2D*</text>
+                        <text x="210" y="105" class="uml-member">- m_shader: Shader*</text>
+                        
+                        <rect x="50" y="150" width="150" height="70" class="uml-class"/>
+                        <text x="125" y="175" class="uml-title">Sprite</text>
+                        <line x1="50" y1="185" x2="200" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ textureRect: Rect</text>
+                        <text x="60" y="215" class="uml-member">+ color: Color</text>
+                        
+                        <rect x="400" y="150" width="150" height="70" class="uml-class"/>
+                        <text x="475" y="175" class="uml-title">SpriteBatch</text>
+                        <line x1="400" y1="185" x2="550" y2="185" class="uml-divider"/>
+                        <text x="410" y="200" class="uml-member">+ add(sprite)</text>
+                        <text x="410" y="215" class="uml-member">+ flush()</text>
+                        
+                        <rect x="200" y="260" width="200" height="40" class="uml-class"/>
+                        <text x="300" y="285" class="uml-title">TextureAtlas</text>
+                        
+                        <line x1="200" y1="110" x2="125" y2="150" class="uml-line"/>
+                        <line x1="400" y1="110" x2="475" y2="150" class="uml-line"/>
+                        <line x1="300" y1="110" x2="300" y2="260" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="3d-renderer" class="doc-section">
+                <h1>3D Renderer</h1>
+                <p>Full 3D rendering pipeline with lighting, materials, and mesh handling.</p>
+
+                <h2>Components</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Mesh</h3>
+                        <p>Vertex buffers, index buffers, vertex attributes</p>
+                    </div>
+                    <div class="component-card">
+                        <h3>Material</h3>
+                        <p>Shader references, uniform values, texture slots</p>
+                    </div>
+                    <div class="component-card">
+                        <h3>Light</h3>
+                        <p>Directional, point, spot lights with attenuation</p>
+                    </div>
+                    <div class="component-card">
+                        <h3>Skybox</h3>
+                        <p>Cube map rendering for environment</p>
+                    </div>
+                </div>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 700 350" id="3d-renderer-uml">
+                        <rect x="50" y="50" width="130" height="80" class="uml-class"/>
+                        <text x="115" y="75" class="uml-title">VertexBuffer</text>
+                        <line x1="50" y1="85" x2="180" y2="85" class="uml-divider"/>
+                        <text x="60" y="100" class="uml-member">- vertices: float[]</text>
+                        <text x="60" y="115" class="uml-member">- count: uint32_t</text>
+                        
+                        <rect x="285" y="50" width="130" height="80" class="uml-class"/>
+                        <text x="350" y="75" class="uml-title">IndexBuffer</text>
+                        <line x1="285" y1="85" x2="415" y2="85" class="uml-divider"/>
+                        <text x="295" y="100" class="uml-member">- indices: uint32_t[]</text>
+                        <text x="295" y="115" class="uml-member">- count: uint32_t</text>
+                        
+                        <rect x="520" y="50" width="130" height="80" class="uml-class"/>
+                        <text x="585" y="75" class="uml-title">VertexArray</text>
+                        <line x1="520" y1="85" x2="650" y2="85" class="uml-divider"/>
+                        <text x="530" y="100" class="uml-member">- vao: uint32_t</text>
+                        <text x="530" y="115" class="uml-member">+ bind/unbind</text>
+                        
+                        <rect x="285" y="180" width="130" height="70" class="uml-class-primary"/>
+                        <text x="350" y="205" class="uml-title">Mesh</text>
+                        <line x1="285" y1="215" x2="415" y2="215" class="uml-divider"/>
+                        <text x="295" y="230" class="uml-member">+ vertexArray</text>
+                        <text x="295" y="245" class="uml-member">+ draw()</text>
+                        
+                        <rect x="50" y="300" width="130" height="40" class="uml-class"/>
+                        <text x="115" y="325" class="uml-title">Material</text>
+                        
+                        <rect x="285" y="300" width="130" height="40" class="uml-class"/>
+                        <text x="350" y="325" class="uml-title">Light</text>
+                        
+                        <rect x="520" y="300" width="130" height="40" class="uml-class"/>
+                        <text x="585" y="325" class="uml-title">Skybox</text>
+                        
+                        <line x1="115" y1="130" x2="115" y2="180" class="uml-line-dashed"/>
+                        <line x1="350" y1="130" x2="350" y2="180" class="uml-line-dashed"/>
+                        <line x1="585" y1="130" x2="585" y2="180" class="uml-line-dashed"/>
+                        
+                        <line x1="180" y1="90" x2="285" y2="90" class="uml-line"/>
+                        <line x1="415" y1="90" x2="520" y2="90" class="uml-line"/>
+                        
+                        <line x1="350" y1="250" x2="115" y2="300" class="uml-line"/>
+                        <line x1="350" y1="250" x2="350" y2="300" class="uml-line"/>
+                        <line x1="350" y1="250" x2="585" y2="300" class="uml-line"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="vulkan-abstraction" class="doc-section">
+                <h1>Vulkan Abstraction</h1>
+                <p>Optional Vulkan implementation for advanced graphics and better performance.</p>
+
+                <div class="info-box warning">
+                    <strong>Note:</strong> Vulkan implementation is optional and serves as a reference for API migration. Focus on OpenGL first.
+                </div>
+
+                <h2>Abstraction Layer Design</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 700 300" id="vulkan-uml">
+                        <rect x="250" y="20" width="200" height="70" class="uml-class-primary"/>
+                        <text x="350" y="45" class="uml-title">GraphicsAPI (interface)</text>
+                        <line x1="250" y1="55" x2="450" y2="55" class="uml-divider"/>
+                        <text x="260" y="75" class="uml-member">+ createBuffer()</text>
+                        <text x="260" y="90" class="uml-member">+ createTexture()</text>
+                        
+                        <rect x="50" y="150" width="200" height="80" class="uml-class"/>
+                        <text x="150" y="175" class="uml-title">OpenGLGraphicsAPI</text>
+                        <line x1="50" y1="185" x2="250" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ createBuffer() override</text>
+                        <text x="60" y="215" class="uml-member">+ createTexture() override</text>
+                        
+                        <rect x="450" y="150" width="200" height="80" class="uml-class"/>
+                        <text x="550" y="175" class="uml-title">VulkanGraphicsAPI</text>
+                        <line x1="450" y1="185" x2="650" y2="185" class="uml-divider"/>
+                        <text x="460" y="200" class="uml-member">+ createBuffer() override</text>
+                        <text x="460" y="215" class="uml-member">+ createTexture() override</text>
+                        
+                        <line x1="350" y1="90" x2="150" y2="150" class="uml-line"/>
+                        <line x1="350" y1="90" x2="550" y2="150" class="uml-line"/>
+                        
+                        <rect x="275" y="260" width="150" height="40" class="uml-class"/>
+                        <text x="350" y="285" class="uml-title">VulkanRenderer</text>
+                        
+                        <line x1="150" y1="230" x2="250" y2="260" class="uml-line-dashed"/>
+                        <line x1="550" y1="230" x2="450" y2="260" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+
+                <h2>Key Vulkan Components to Implement</h2>
+                <ul class="feature-list">
+                    <li><strong>Instance:</strong> Vulkan application instance</li>
+                    <li><strong>Physical Device:</strong> GPU selection</li>
+                    <li><strong>Device:</strong> Logical device and queues</li>
+                    <li><strong>Command Buffers:</strong> Recording draw commands</li>
+                    <li><strong>Descriptor Sets:</strong> Binding resources to shaders</li>
+                    <li><strong>Swap Chain:</strong> Frame presentation</li>
+                    <li><strong>Render Pass:</strong> Rendering pipeline configuration</li>
+                </ul>
+            </section>
+
+            <section id="ecs-core" class="doc-section">
+                <h1>ECS Core</h1>
+                <p>Entity Component System architecture for efficient game object management.</p>
+
+                <h2>ECS Concepts</h2>
+                <div class="concept-cards">
+                    <div class="concept-card">
+                        <h3>Entity</h3>
+                        <p>Just an ID. A unique identifier that represents a game object.</p>
+                        <code>Entity = uint32_t</code>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Component</h3>
+                        <p>Raw data. No logic, just data structures attached to entities.</p>
+                        <code>struct Position { float x, y, z; }</code>
+                    </div>
+                    <div class="concept-card">
+                        <h3>System</h3>
+                        <p>Logic. Functions that operate on entities with specific components.</p>
+                        <code>MovementSystem, RenderSystem</code>
+                    </div>
+                </div>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 700 350" id="ecs-uml">
+                        <rect x="275" y="20" width="150" height="60" class="uml-class-primary"/>
+                        <text x="350" y="45" class="uml-title">World</text>
+                        <line x1="275" y1="55" x2="425" y2="55" class="uml-divider"/>
+                        <text x="285" y="75" class="uml-member">+ createEntity(): Entity</text>
+                        
+                        <rect x="50" y="150" width="150" height="60" class="uml-class"/>
+                        <text x="125" y="175" class="uml-title">EntityManager</text>
+                        <line x1="50" y1="185" x2="200" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ create(): Entity</text>
+                        <text x="60" y="210" class="uml-member">+ destroy(Entity)</text>
+                        
+                        <rect x="275" y="150" width="150" height="60" class="uml-class"/>
+                        <text x="350" y="175" class="uml-title">ComponentManager</text>
+                        <line x1="275" y1="185" x2="425" y2="185" class="uml-divider"/>
+                        <text x="285" y="200" class="uml-member">+ register&lt;T&gt;()</text>
+                        <text x="285" y="210" class="uml-member">+ add&lt;T&gt;(entity)</text>
+                        
+                        <rect x="500" y="150" width="150" height="60" class="uml-class"/>
+                        <text x="575" y="175" class="uml-title">SystemManager</text>
+                        <line x1="500" y1="185" x2="650" y2="185" class="uml-divider"/>
+                        <text x="510" y="200" class="uml-member">+ register&lt;T&gt;()</text>
+                        <text x="510" y="210" class="uml-member">+ update(delta)</text>
+                        
+                        <rect x="50" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="125" y="305" class="uml-title">ComponentArray</text>
+                        
+                        <rect x="275" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="350" y="305" class="uml-title">System</text>
+                        
+                        <rect x="500" y="280" width="150" height="50" class="uml-class"/>
+                        <text x="575" y="305" class="uml-title">EntitySignature</text>
+                        
+                        <line x1="350" y1="80" x2="125" y2="150" class="uml-line"/>
+                        <line x1="350" y1="80" x2="350" y2="150" class="uml-line"/>
+                        <line x1="350" y1="80" x2="575" y2="150" class="uml-line"/>
+                        
+                        <line x1="125" y1="210" x2="125" y2="280" class="uml-line-dashed"/>
+                        <line x1="350" y1="210" x2="350" y2="280" class="uml-line-dashed"/>
+                        <line x1="575" y1="210" x2="575" y2="280" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/ecs/World.hpp
+#pragma once
+
+#include "Entity.hpp"
+#include "ComponentArray.hpp"
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+namespace GameEngine {
+
+class System;
+
+class World {
+public:
+    Entity createEntity();
+    void destroyEntity(Entity entity);
+    
+    template&lt;typename T&gt;
+    void registerComponent();
+    
+    template&lt;typename T&gt;
+    void addComponent(Entity entity, const T&amp; component);
+    
+    template&lt;typename T&gt;
+    T&amp; getComponent(Entity entity);
+    
+    template&lt;typename T&gt;
+    bool hasComponent(Entity entity);
+    
+    template&lt;typename T&gt;
+    void registerSystem();
+    
+    template&lt;typename T&gt;
+    T* getSystem();
+    
+    void update(float deltaTime);
+    
+private:
+    uint32_t m_nextEntity = 0;
+    std::vector&lt;Entity&gt; m_entities;
+    
+    std::unordered_map&lt;size_t, std::unique_ptr&lt;IComponentArray&gt;&gt; m_componentArrays;
+    std::unordered_map&lt;size_t, std::unique_ptr&lt;System&gt;&gt; m_systems;
+    
+    std::vector&lt;EntitySignature&gt; m_signatures;
+};
+
+}</code></pre>
+            </section>
+
+            <section id="components" class="doc-section">
+                <h1>Components</h1>
+                <p>Data structures that attach to entities. Pure data, no logic.</p>
+
+                <h2>Core Components</h2>
+                <div class="component-list">
+                    <div class="component-item">
+                        <h3>Transform Component</h3>
+                        <p>Position, rotation, scale in 3D space</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Sprite Component</h3>
+                        <p>2D sprite rendering properties</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Mesh Component</h3>
+                        <p>3D mesh rendering properties</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Camera Component</h3>
+                        <p>Marks entity as a camera</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>RigidBody Component</h3>
+                        <p>Physics body properties</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Collider Component</h3>
+                        <p>Collision shape data</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Light Component</h3>
+                        <p>Light source properties</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>AudioSource Component</h3>
+                        <p>Audio playback properties</p>
+                    </div>
+                    <div class="component-item">
+                        <h3>Tag Component</h3>
+                        <p>Entity identification</p>
+                    </div>
+                </div>
+
+                <h2>Example Components</h2>
+                <pre class="code-block"><code>// Transform Component
+struct Transform {
+    Vec3 position = Vec3(0);
+    Vec3 rotation = Vec3(0);
+    Vec3 scale = Vec3(1);
+    Entity parent = INVALID_ENTITY;
+};
+
+// Sprite Component  
+struct Sprite {
+    Texture2D* texture = nullptr;
+    Rect sourceRect;
+    Color color = Color::White;
+    int sortingOrder = 0;
+};
+
+// RigidBody Component
+struct RigidBody {
+    float mass = 1.0f;
+    Vec3 velocity = Vec3(0);
+    Vec3 angularVelocity = Vec3(0);
+    float linearDamping = 0.01f;
+    float angularDamping = 0.01f;
+};</code></pre>
+            </section>
+
+            <section id="systems" class="doc-section">
+                <h1>Systems</h1>
+                <p>Logic that processes entities with specific component signatures.</p>
+
+                <h2>Core Systems</h2>
+                <div class="system-flow">
+                    <div class="system-box">
+                        <h3>TransformSystem</h3>
+                        <p>Updates world transform matrix from hierarchy</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>InputSystem</h3>
+                        <p>Processes input and updates player-controlled entities</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>MovementSystem</h3>
+                        <p>Updates positions based on velocities</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>PhysicsSystem</h3>
+                        <p>Runs physics simulation step</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>CollisionSystem</h3>
+                        <p>Detects and resolves collisions</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>RenderSystem</h3>
+                        <p>Submits renderables to renderer</p>
+                    </div>
+                    <div class="system-box">
+                        <h3>AudioSystem</h3>
+                        <p>Updates spatial audio positions</p>
+                    </div>
+                </div>
+
+                <h2>System Implementation Pattern</h2>
+                <pre class="code-block"><code>// MovementSystem example
+class MovementSystem : public System {
+public:
+    void init() override {
+        m_requiredComponents = {
+            ComponentType::Transform,
+            ComponentType::RigidBody
+        };
+    }
+    
+    void update(float dt) override {
+        for (Entity entity : getEntities()) {
+            auto&amp; transform = m_world-&gt;getComponent&lt;Transform&gt;(entity);
+            auto&amp; body = m_world-&gt;getComponent&lt;RigidBody&gt;(entity);
+            
+            transform.position += body.velocity * dt;
+            transform.rotation += body.angularVelocity * dt;
+        }
+    }
+};</code></pre>
+            </section>
+
+            <section id="physics-core" class="doc-section">
+                <h1>Physics Core</h1>
+                <p>Rigid body dynamics and collision detection system.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Rigid body dynamics with mass, velocity, angular velocity</li>
+                    <li>Force and torque accumulation</li>
+                    <li>Impulse-based collision response</li>
+                    <li>Fixed timestep integration</li>
+                    <li>Spatial partitioning for broad phase</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 300" id="physics-uml">
+                        <rect x="200" y="20" width="200" height="80" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">PhysicsWorld</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_bodies: vector&lt;RigidBody*&gt;</text>
+                        <text x="210" y="90" class="uml-member">- m_solver: ConstraintSolver</text>
+                        <line x1="200" y1="95" x2="400" y2="95" class="uml-divider"/>
+                        <text x="210" y="110" class="uml-member">+ step(dt)</text>
+                        
+                        <rect x="50" y="150" width="150" height="70" class="uml-class"/>
+                        <text x="125" y="175" class="uml-title">RigidBody</text>
+                        <line x1="50" y1="185" x2="200" y2="185" class="uml-divider"/>
+                        <text x="60" y="200" class="uml-member">+ mass, inertia</text>
+                        <text x="60" y="215" class="uml-member">+ velocity, angVel</text>
+                        
+                        <rect x="400" y="150" width="150" height="70" class="uml-class"/>
+                        <text x="475" y="175" class="uml-title">Collider</text>
+                        <line x1="400" y1="185" x2="550" y2="185" class="uml-divider"/>
+                        <text x="410" y="200" class="uml-member">+ shape: ColliderShape</text>
+                        <text x="410" y="215" class="uml-member">+ getAABB()</text>
+                        
+                        <rect x="200" y="260" width="200" height="40" class="uml-class"/>
+                        <text x="300" y="285" class="uml-title">BroadPhase (SAP/BVH)</text>
+                        
+                        <line x1="300" y1="100" x2="125" y2="150" class="uml-line"/>
+                        <line x1="300" y1="100" x2="475" y2="150" class="uml-line"/>
+                        <line x1="300" y1="220" x2="300" y2="260" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="collision" class="doc-section">
+                <h1>Collision Detection</h1>
+                <p>Collision shapes and detection algorithms for physics simulation.</p>
+
+                <h2>Collision Shapes</h2>
+                <div class="shape-grid">
+                    <div class="shape-card">
+                        <div class="shape-icon">◯</div>
+                        <h3>Sphere</h3>
+                        <p>Fast sphere-sphere, sphere-plane tests</p>
+                    </div>
+                    <div class="shape-card">
+                        <div class="shape-icon">▢</div>
+                        <h3>AABB</h3>
+                        <p>Axis-Aligned Bounding Box</p>
+                    </div>
+                    <div class="shape-card">
+                        <div class="shape-icon">◇</div>
+                        <h3>OBB</h3>
+                        <p>Oriented Bounding Box</p>
+                    </div>
+                    <div class="shape-card">
+                        <div class="shape-icon">△</div>
+                        <h3>Plane</h3>
+                        <p>Infinite plane for ground</p>
+                    </div>
+                    <div class="shape-card">
+                        <div class="shape-icon">⬡</div>
+                        <h3> Capsule</h3>
+                        <p>Character controllers</p>
+                    </div>
+                    <div class="shape-card">
+                        <div class="shape-icon">⬢</div>
+                        <h3>Mesh</h3>
+                        <p>Triangle mesh collision</p>
+                    </div>
+                </div>
+
+                <h2>Detection Pipeline</h2>
+                <div class="pipeline-flow">
+                    <div class="pipeline-stage">
+                        <div class="stage-number">1</div>
+                        <div class="stage-content">
+                            <h4>Broad Phase</h4>
+                            <p>SAP, BVH, Spatial Hash</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">2</div>
+                        <div class="stage-content">
+                            <h4>Narrow Phase</h4>
+                            <p>GJK, SAT algorithms</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">3</div>
+                        <div class="stage-content">
+                            <h4>Contact Gen</h4>
+                            <p>EPA for penetration</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-stage">
+                        <div class="stage-number">4</div>
+                        <div class="stage-content">
+                            <h4>Resolution</h4>
+                            <p>Impulse-based solver</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rigid-bodies" class="doc-section">
+                <h1>Rigid Bodies</h1>
+                <p>Physical simulation of rigid body dynamics.</p>
+
+                <h2>Body Types</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>Static Bodies</h3>
+                        <p>Infinite mass, zero velocity. Used for ground, walls.</p>
+                        <pre class="code-block"><code>mass = INFINITY
+velocity = Vec3(0)
+invMass = 0</code></pre>
+                    </div>
+                    <div>
+                        <h3>Dynamic Bodies</h3>
+                        <p>Finite mass, simulated physics. Used for players, crates.</p>
+                        <pre class="code-block"><code>mass = 1.0f
+velocity = computed
+invMass = 1.0f</code></pre>
+                    </div>
+                </div>
+
+                <h2>Integration</h2>
+                <pre class="code-block"><code>// Semi-implicit Euler integration
+void RigidBody::integrate(float dt) {
+    // Apply gravity
+    velocity += gravity * dt;
+    
+    // Apply damping
+    velocity *= (1.0f - linearDamping);
+    angularVelocity *= (1.0f - angularDamping);
+    
+    // Integrate position
+    position += velocity * dt;
+    rotation += angularVelocity * dt;
+    
+    // Reset forces
+    force = Vec3(0);
+    torque = Vec3(0);
+}</code></pre>
+            </section>
+
+            <section id="scene-graph" class="doc-section">
+                <h1>Scene Graph</h1>
+                <p>Hierarchical organization of game objects with parent-child relationships.</p>
+
+                <h2>Structure</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 500 280" id="scene-graph-uml">
+                        <rect x="175" y="20" width="150" height="60" class="uml-class-primary"/>
+                        <text x="250" y="45" class="uml-title">Scene</text>
+                        <line x1="175" y1="55" x2="325" y2="55" class="uml-divider"/>
+                        <text x="185" y="75" class="uml-member">+ root: SceneNode*</text>
+                        
+                        <rect x="175" y="100" width="150" height="80" class="uml-class"/>
+                        <text x="250" y="125" class="uml-title">SceneNode</text>
+                        <line x1="175" y1="135" x2="325" y2="135" class="uml-divider"/>
+                        <text x="185" y="155" class="uml-member">- children: vector&lt;Node*&gt;</text>
+                        <text x="185" y="170" class="uml-member">- entity: Entity</text>
+                        
+                        <rect x="50" y="220" width="100" height="50" class="uml-class"/>
+                        <text x="100" y="250" class="uml-title">Child Node</text>
+                        
+                        <rect x="350" y="220" width="100" height="50" class="uml-class"/>
+                        <text x="400" y="250" class="uml-title">Child Node</text>
+                        
+                        <line x1="250" y1="80" x2="250" y2="100" class="uml-line"/>
+                        <line x1="250" y1="180" x2="100" y2="220" class="uml-line"/>
+                        <line x1="250" y1="180" x2="400" y2="220" class="uml-line"/>
+                    </svg>
+                </div>
+
+                <h2>Transform Hierarchy</h2>
+                <pre class="code-block"><code>// World transform calculation
+Mat4 SceneNode::getWorldTransform() {
+    if (parent) {
+        return parent-&gt;getWorldTransform() * getLocalTransform();
+    }
+    return getLocalTransform();
+}</code></pre>
+            </section>
+
+            <section id="transform" class="doc-section">
+                <h1>Transform System</h1>
+                <p>Manages position, rotation, and scale with hierarchy support.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Local and world space transforms</li>
+                    <li>Parent-child hierarchy</li>
+                    <li>Dirty flag optimization</li>
+                    <li>Quaternion rotation support</li>
+                    <li>TRS (Translation-Rotation-Scale) decomposition</li>
+                </ul>
+
+                <h2>Matrix Composition</h2>
+                <pre class="code-block"><code>// TRS Matrix
+Matrix4x4 transform = Translation * Rotation * Scale;
+
+Vec3 worldPos = transform * localPos;
+
+// Decomposition
+Vec3 translation = transform.getTranslation();
+Quaternion rotation = transform.getRotation();
+Vec3 scale = transform.getScale();</code></pre>
+            </section>
+
+            <section id="serialization" class="doc-section">
+                <h1>Serialization</h1>
+                <p>Scene and entity persistence for saving/loading games.</p>
+
+                <h2>Supported Formats</h2>
+                <ul class="feature-list">
+                    <li><strong>JSON:</strong> Human-readable, easy debugging</li>
+                    <li><strong>Binary:</strong> Fast loading, smaller files</li>
+                    <li><strong>XML:</strong> Legacy support, external tools</li>
+                </ul>
+
+                <h2>Serialization Flow</h2>
+                <div class="flow-diagram">
+                    <div class="flow-box">Game Objects</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">Serialize</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">JSON/Binary</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">File</div>
+                </div>
+
+                <h2>Example Scene JSON</h2>
+                <pre class="code-block"><code>{
+  "scene": "MainLevel",
+  "entities": [
+    {
+      "id": 1,
+      "name": "Player",
+      "components": {
+        "Transform": { "position": [0, 1, 0] },
+        "Sprite": { "texture": "player.png" },
+        "RigidBody": { "mass": 1.0 }
+      },
+      "children": []
+    }
+  ]
+}</code></pre>
+            </section>
+
+            <section id="asset-manager" class="doc-section">
+                <h1>Asset Manager</h1>
+                <p>Centralized resource loading and caching system.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Asynchronous loading</li>
+                    <li>Reference counting with automatic cleanup</li>
+                    <li>Hot reloading support</li>
+                    <li>Resource pooling</li>
+                    <li>Compression support</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 250" id="asset-uml">
+                        <rect x="200" y="20" width="200" height="90" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">AssetManager</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_textures: Cache&lt;Texture&gt;</text>
+                        <text x="210" y="90" class="uml-member">- m_meshes: Cache&lt;Mesh&gt;</text>
+                        <text x="210" y="105" class="uml-member">- m_shaders: Cache&lt;Shader&gt;</text>
+                        
+                        <rect x="50" y="160" width="150" height="70" class="uml-class"/>
+                        <text x="125" y="185" class="uml-title">ResourceCache</text>
+                        <line x1="50" y1="195" x2="200" y2="195" class="uml-divider"/>
+                        <text x="60" y="215" class="uml-member">+ load(path): T*</text>
+                        <text x="60" y="230" class="uml-member">+ unload(path)</text>
+                        
+                        <rect x="400" y="160" width="150" height="70" class="uml-class"/>
+                        <text x="475" y="185" class="uml-title">Loader</text>
+                        <line x1="400" y1="195" x2="550" y2="195" class="uml-divider"/>
+                        <text x="410" y="215" class="uml-member">+ load(path): Asset*</text>
+                        <text x="410" y="230" class="uml-member">+ save(path, asset)</text>
+                        
+                        <line x1="300" y1="110" x2="125" y2="160" class="uml-line"/>
+                        <line x1="300" y1="110" x2="475" y2="160" class="uml-line"/>
+                    </svg>
+                </div>
+
+                <h2>Implementation</h2>
+                <pre class="code-block"><code>// src/assets/AssetManager.hpp
+#pragma once
+
+#include "Texture.hpp"
+#include "Mesh.hpp"
+#include "Shader.hpp"
+#include &lt;memory&gt;
+#include &lt;unordered_map&gt;
+
+namespace GameEngine {
+
+class AssetManager {
+public:
+    static AssetManager&amp; get();
+    
+    Texture* loadTexture(const std::string&amp; path);
+    Mesh* loadMesh(const std::string&amp; path);
+    Shader* loadShader(const std::string&amp; vs, 
+                      const std::string&amp; fs);
+    
+    void unload(const std::string&amp; path);
+    void unloadAll();
+    
+private:
+    std::unordered_map&lt;std::string, std::unique_ptr&lt;Texture&gt;&gt; m_textures;
+    std::unordered_map&lt;std::string, std::unique_ptr&lt;Mesh&gt;&gt; m_meshes;
+    std::unordered_map&lt;std::string, std::unique_ptr&lt;Shader&gt;&gt; m_shaders;
+};
+
+}</code></pre>
+            </section>
+
+            <section id="resource-loaders" class="doc-section">
+                <h1>Resource Loaders</h1>
+                <p>Format-specific loaders for different asset types.</p>
+
+                <h2>Supported Formats</h2>
+                <div class="format-grid">
+                    <div class="format-card">
+                        <h3>Textures</h3>
+                        <p>PNG, JPG, BMP, TGA, DDS, HDR</p>
+                    </div>
+                    <div class="format-card">
+                        <h3>Meshes</h3>
+                        <p>OBJ, GLTF, FBX (via assimp)</p>
+                    </div>
+                    <div class="format-card">
+                        <h3>Audio</h3>
+                        <p>WAV, MP3, OGG, FLAC</p>
+                    </div>
+                    <div class="format-card">
+                        <h3>Shaders</h3>
+                        <p>GLSL, SPIR-V</p>
+                    </div>
+                    <div class="format-card">
+                        <h3>Scenes</h3>
+                        <p>JSON, Binary</p>
+                    </div>
+                </div>
+
+                <h2>Loader Interface</h2>
+                <pre class="code-block"><code>class IAssetLoader {
+public:
+    virtual ~IAssetLoader() = default;
+    virtual bool canLoad(const std::string&amp; extension) = 0;
+    virtual std::unique_ptr&lt;Asset&gt; load(const std::string&amp; path) = 0;
+};
+
+class TextureLoader : public IAssetLoader {
+public:
+    bool canLoad(const std::string&amp; ext) override {
+        return ext == ".png" || ext == ".jpg";
+    }
+    
+    std::unique_ptr&lt;Asset&gt; load(const std::string&amp; path) override;
+};</code></pre>
+            </section>
+
+            <section id="audio-engine" class="doc-section">
+                <h1>Audio Engine</h1>
+                <p>Audio playback and spatial audio using OpenAL.</p>
+
+                <h2>Features</h2>
+                <ul class="feature-list">
+                    <li>Multiple audio sources</li>
+                    <li>Spatial audio with 3D positioning</li>
+                    <li>Audio mixing and effects</li>
+                    <li>Streaming for large audio files</li>
+                    <li>Multiple audio formats</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 250" id="audio-uml">
+                        <rect x="200" y="20" width="200" height="90" class="uml-class-primary"/>
+                        <text x="300" y="45" class="uml-title">AudioEngine</text>
+                        <line x1="200" y1="55" x2="400" y2="55" class="uml-divider"/>
+                        <text x="210" y="75" class="uml-member">- m_context: ALCcontext*</text>
+                        <text x="210" y="90" class="uml-member">- m_device: ALCdevice*</text>
+                        <text x="210" y="105" class="uml-member">- m_sources: vector</text>
+                        
+                        <rect x="50" y="160" width="150" height="70" class="uml-class"/>
+                        <text x="125" y="185" class="uml-title">AudioSource</text>
+                        <line x1="50" y1="195" x2="200" y2="195" class="uml-divider"/>
+                        <text x="60" y="215" class="uml-member">+ play()</text>
+                        <text x="60" y="230" class="uml-member">+ setPosition()</text>
+                        
+                        <rect x="400" y="160" width="150" height="70" class="uml-class"/>
+                        <text x="475" y="185" class="uml-title">AudioBuffer</text>
+                        <line x1="400" y1="195" x2="550" y2="195" class="uml-divider"/>
+                        <text x="410" y="215" class="uml-member">+ buffer: ALuint</text>
+                        <text x="410" y="230" class="uml-member">+ load(path)</text>
+                        
+                        <line x1="300" y1="110" x2="125" y2="160" class="uml-line"/>
+                        <line x1="300" y1="110" x2="475" y2="160" class="uml-line"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="math-library" class="doc-section">
+                <h1>Math Library</h1>
+                <p>Vector, matrix, and quaternion math operations.</p>
+
+                <h2>Existing Classes</h2>
+                <ul class="feature-list">
+                    <li><strong>Vec2:</strong> 2D vector with basic operations</li>
+                    <li><strong>Vec3:</strong> 3D vector with cross product</li>
+                    <li><strong>Matrix3x3:</strong> 3x3 rotation matrices</li>
+                    <li><strong>Matrix4x4:</strong> 4x4 transformation matrices</li>
+                    <li><strong>Pose2:</strong> 2D position and rotation</li>
+                    <li><strong>Pose3:</strong> 3D position and rotation</li>
+                    <li><strong>Rot3:</strong> 3D rotation (roll, pitch, yaw)</li>
+                </ul>
+
+                <h2>Future Additions</h2>
+                <ul class="feature-list">
+                    <li><strong>Quaternion:</strong> For rotation interpolation (slerp)</li>
+                    <li><strong>MathUtils:</strong> Clamp, lerp, smoothstep functions</li>
+                    <li><strong>Ray:</strong> For raycasting</li>
+                    <li><strong>Plane:</strong> For clipping and culling</li>
+                    <li><strong>BoundingBox:</strong> AABB and OBB classes</li>
+                </ul>
+
+                <h2>Class Diagram</h2>
+                <div class="uml-container">
+                    <svg class="uml-diagram" viewBox="0 0 600 200" id="math-uml">
+                        <rect x="50" y="50" width="100" height="60" class="uml-class"/>
+                        <text x="100" y="75" class="uml-title">Vec2</text>
+                        <text x="60" y="95" class="uml-member">x, y</text>
+                        
+                        <rect x="175" y="50" width="100" height="60" class="uml-class"/>
+                        <text x="225" y="75" class="uml-title">Vec3</text>
+                        <text x="185" y="95" class="uml-member">x, y, z</text>
+                        
+                        <rect x="325" y="50" width="100" height="60" class="uml-class"/>
+                        <text x="375" y="75" class="uml-title">Vec4</text>
+                        <text x="335" y="95" class="uml-member">x, y, z, w</text>
+                        
+                        <rect x="475" y="50" width="100" height="60" class="uml-class"/>
+                        <text x="525" y="75" class="uml-title">Quaternion</text>
+                        <text x="485" y="95" class="uml-member">x, y, z, w</text>
+                        
+                        <rect x="100" y="140" width="150" height="50" class="uml-class-primary"/>
+                        <text x="175" y="165" class="uml-title">Matrix4x4</text>
+                        <text x="110" y="180" class="uml-member">m[16]</text>
+                        
+                        <rect x="350" y="140" width="150" height="50" class="uml-class"/>
+                        <text x="425" y="165" class="uml-title">MathUtils</text>
+                        <text x="360" y="180" class="uml-member">clamp, lerp</text>
+                        
+                        <line x1="100" y1="110" x2="100" y2="140" class="uml-line-dashed"/>
+                        <line x1="225" y1="110" x2="175" y2="140" class="uml-line-dashed"/>
+                        <line x1="375" y1="110" x2="250" y2="140" class="uml-line-dashed"/>
+                        <line x1="525" y1="110" x2="300" y2="140" class="uml-line-dashed"/>
+                        <line x1="425" y1="110" x2="425" y2="140" class="uml-line-dashed"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section id="utils" class="doc-section">
+                <h1>Utilities</h1>
+                <p>Common utility classes and helper functions.</p>
+
+                <h2>Core Utilities</h2>
+                <ul class="feature-list">
+                    <li><strong>Timer:</strong> High-resolution timing</li>
+                    <li><strong>UUID:</strong> Unique identifiers</li>
+                    <li><strong>StringUtils:</strong> String manipulation</li>
+                    <li><strong>FileUtils:</strong> File system operations</li>
+                    <li><strong>Color:</strong> Color representation and conversion</li>
+                    <li><strong>Random:</strong> Random number generation</li>
+                    <li><strong>PoolAllocator:</strong> Memory pooling</li>
+                    <li><strong>Profiler:</strong> Performance profiling</li>
+                </ul>
+
+                <h2>Container Extensions</h2>
+                <pre class="code-block"><code>// Example: Ring buffer for object pooling
+template&lt;typename T&gt;
+class RingBuffer {
+public:
+    RingBuffer(size_t capacity);
+    T* allocate();
+    void deallocate(T* item);
+    
+private:
+    std::vector&lt;T&gt; m_data;
+    size_t m_head = 0;
+    size_t m_tail = 0;
+};
+
+// Example: Object pool
+template&lt;typename T&gt;
+class ObjectPool {
+public:
+    std::unique_ptr&lt;T&gt; acquire();
+    void release(std::unique_ptr&lt;T&gt; obj);
+};</code></pre>
+            </section>
+
+            <footer class="doc-footer">
+                <p>GameEngineCpp Documentation | <a href="https://github.com/anomalyco/GameEngineCpp">GitHub</a></p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
