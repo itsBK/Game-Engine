@@ -19,7 +19,7 @@ public:
 
     Vec2 operator+(const Vec2& other) const;
     Vec2 operator-(const Vec2& other) const;
-    /// dot product
+    /// @return the dot product.
     double operator*(const Vec2& other) const;
 
     Vec2 operator*(const double& scalar) const;
@@ -27,12 +27,17 @@ public:
 
     friend Vec2 operator*(const double& scalar, const Vec2& vec);
 
+    bool operator!=(const Vec2& other) const;
+    bool operator==(const Vec2& other) const;
+
     Vec2& operator+=(const Vec2& other);
     Vec2& operator-=(const Vec2& other);
 
+    /// @return a reference to self
     Vec2& operator*=(const double& scalar);
+    /// @return a reference to self
     Vec2& operator/=(const double& scalar);
-    /// project this onto other
+    /// project this vector onto other.
     Vec2 operator>>(const Vec2& other) const;
 
     double len() const;
@@ -40,20 +45,22 @@ public:
     double dist(const Vec2& other) const;
     double distSq(const Vec2& other) const;
 
+    /// in radians.
     double angle() const;
     /// normalize this vector
     /// @return reference to self
     Vec2& norm();
-    /// @return a normalized copy of this vector
+    /// @return a normalized copy of this
     Vec2 normalized() const;
     double dot(const Vec2& other) const;
+    /// @return the 2D cross product (z-component).
     double cross(const Vec2& other) const;
-    /// rotate this vector
-    /// @return reference to self
+    /// Rotates the vector in-place by the given angle (radians).
+    /// @return a reference to self
     Vec2& rotate(double angle);
-    /// @return a rotated copy of this vector
+    /// @return a rotated copy of this
     Vec2 rotated(double angle) const;
-    /// mirror target over this pose
+    /// mirror target over this vector
     Vec2 mirror(const Vec2& target) const;
 
     static double dist(const Vec2& a, const Vec2& b);

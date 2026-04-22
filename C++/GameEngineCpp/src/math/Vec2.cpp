@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "include/math/MathUtils.hpp"
+
 using namespace GameEngine::Math;
 
 
@@ -38,6 +40,21 @@ Vec2 Vec2::operator/(const double& scalar) const
     return { x / scalar, y / scalar };
 }
 
+Vec2 GameEngine::Math::operator*(const double& scalar, const Vec2& vec)
+{
+    return vec * scalar;
+}
+
+bool Vec2::operator!=(const Vec2& other) const
+{
+    return !isZero(x - other.x) || !isZero(y - other.y);
+}
+
+bool Vec2::operator==(const Vec2& other) const
+{
+    return isZero(x - other.x) && isZero(y - other.y);
+}
+
 Vec2& Vec2::operator+=(const Vec2& other)
 {
     x += other.x;
@@ -66,17 +83,14 @@ Vec2& Vec2::operator/=(const double& scalar)
     return *this;
 }
 
-Vec2 GameEngine::Math::operator*(const double& scalar, const Vec2& vec)
-{
-    return vec * scalar;
-}
-
 Vec2 Vec2::operator>>(const Vec2& other) const
 {
-    double length = (*this * other) / other.lenSq();
+    double lengthSq = other.lenSq();
+    if (isZero(lengthSq))
+        return {};
+    double length = *this * other / lengthSq;
     return other * length;
 }
-
 
 double Vec2::len() const
 {
@@ -112,7 +126,7 @@ Vec2& Vec2::norm()
 Vec2 Vec2::normalized() const
 {
     double length = len();
-    if (length != 0)
+    if (!isZero(length))
         return *this / length;
 
     return {};
@@ -122,7 +136,6 @@ double Vec2::dot(const Vec2& other) const
 {
     return *this * other;
 }
-
 
 double Vec2::cross(const Vec2& other) const
 {
