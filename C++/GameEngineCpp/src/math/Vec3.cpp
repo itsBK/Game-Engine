@@ -33,6 +33,21 @@ Vec3 Vec3::operator/(const double& scalar) const
     return { x / scalar, y / scalar, z / scalar };
 }
 
+Vec3 GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
+{
+    return vec * scalar;
+}
+
+bool Vec3::operator!=(const Vec3& other) const
+{
+    return !isZero(x - other.x) || !isZero(y - other.y) || !isZero(z - other.y);
+}
+
+bool Vec3::operator==(const Vec3& other) const
+{
+    return isZero(x - other.x) && isZero(y - other.y) && isZero(z - other.z);
+}
+
 Vec3& Vec3::operator+=(const Vec3& other)
 {
     x += other.x;

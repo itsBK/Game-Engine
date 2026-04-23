@@ -26,6 +26,11 @@ public:
     Vec3 operator*(const double& scalar) const;
     Vec3 operator/(const double& scalar) const;
 
+    friend Vec3 operator*(const double& scalar, const Vec3& vec);
+
+    bool operator!=(const Vec3& other) const;
+    bool operator==(const Vec3& other) const;
+
     Vec3& operator+=(const Vec3& other);
     Vec3& operator-=(const Vec3& other);
     Vec3& operator*=(const double& scalar);
