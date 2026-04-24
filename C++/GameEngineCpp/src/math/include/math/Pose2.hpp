@@ -19,11 +19,15 @@ public:
 
     Pose2(double x, double y, double angle);
     Pose2(const Vec2& pos, double angle);
+    Pose2(const Transform2& other);
+    Pose2& operator=(const Transform2& other);
 
     double dist(const Vec2& other) const;
     double distSq(const Vec2& other) const;
     double dist(const Pose2& other) const;
     double distSq(const Pose2& other) const;
+    double dist(const Transform2& other) const;
+    double distSq(const Transform2& other) const;
 
     /// @return local to global transformation
     Vec2 local(const Vec2& target) const;
