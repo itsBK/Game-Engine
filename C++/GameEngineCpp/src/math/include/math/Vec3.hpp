@@ -58,6 +58,8 @@ public:
     Vec3 normalized() const;
     double dot(const Vec3& other) const;
     Vec3 cross(const Vec3& other) const;
+    /// mirror target over this vector
+    Vec3 mirror(const Vec3& target) const;
 };
 
 }

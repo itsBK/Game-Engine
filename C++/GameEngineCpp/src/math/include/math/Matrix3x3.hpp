@@ -8,7 +8,8 @@ namespace GameEngine::Math {
 
 ///
 /// using right hand rule (OpenGL convention)
-class Matrix3x3 {
+class Matrix3x3
+{
 
     double _matrix[9] = {};
     explicit inline Matrix3x3(const std::array<double, 9>& matrix);
@@ -23,11 +24,13 @@ public:
         ZXY,
         ZYX
     };
+
     class Row
     {
     public:
         explicit Row(double* matrix, const unsigned int& rowNum);
         double& operator[](const unsigned int& index) const;
+
     private:
         unsigned int _rowNum;
         double* _matrix;
@@ -51,6 +54,7 @@ public:
 
     Matrix3x3 operator*(const double& scalar) const;
     Matrix3x3 operator/(const double& scalar) const;
+
     Matrix3x3 operator*(const Matrix3x3& other) const;
     Vec3 operator*(const Vec3& other) const;
 
@@ -67,4 +71,3 @@ public:
 };
 
 }
-

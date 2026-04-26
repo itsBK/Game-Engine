@@ -159,3 +159,9 @@ Vec3 Vec3::cross(const Vec3 &other) const
         x * other.y - y * other.x
     };
 }
+
+Vec3 Vec3::mirror(const Vec3& target) const
+{
+    Vec3 projected = target >> *this;
+    return (projected *= 2) -= target;
+}

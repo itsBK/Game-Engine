@@ -5,6 +5,7 @@ add_library(${PROJECT_NAME} SHARED
     Vec3.cpp
     Pose2.cpp
     Transform2.cpp
+    Transform3.cpp
     Matrix3x3.cpp
     MathUtils.cpp)
 

@@ -11,7 +11,7 @@ class Transform2
 public:
     Vec2 pos = {};
     /// unit Vector
-    Vec2 forward = {};
+    Vec2 forward = {1,0};
 
     Transform2() = default;
     Transform2(const Transform2& other) = default;

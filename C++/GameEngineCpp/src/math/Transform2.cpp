@@ -6,7 +6,7 @@ using namespace GameEngine::Math;
 
 
 Transform2::Transform2(const Vec2& pos, const Vec2& forward)
-    : pos(pos), forward(forward) {}
+    : pos(pos), forward(forward.normalized()) {}
 
 Transform2::Transform2(const Pose2& other)
     : pos(other.pos), forward(other.dir()) {}
@@ -125,10 +125,10 @@ inline Vec2 Transform2::rotateForward(const Vec2& target) const
 inline Vec2 Transform2::rotateBackward(const Vec2& target) const
 {
     /*
-     * equivalent to using cos(-angle) and sin(-angle)
+     * equivalent to using cos(-angle) = cos(angle) and sin(-angle) = -sin(angle)
      */
     return {
-        target.x * forward.x + target.y * forward.y,
+         target.x * forward.x + target.y * forward.y,
         -target.x * forward.y + target.y * forward.x
     };
 }
