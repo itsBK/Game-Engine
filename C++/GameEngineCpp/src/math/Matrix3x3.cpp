@@ -96,9 +96,9 @@ Matrix3x3 Matrix3x3::operator*(const Matrix3x3& mat) const
 		_matrix[3] * mat._matrix[1] + _matrix[4] * mat._matrix[4] + _matrix[5] * mat._matrix[7],
 		_matrix[3] * mat._matrix[2] + _matrix[4] * mat._matrix[5] + _matrix[5] * mat._matrix[8],
 
-		_matrix[3] * mat._matrix[0] + _matrix[7] * mat._matrix[3] + _matrix[8] * mat._matrix[6],
-		_matrix[3] * mat._matrix[1] + _matrix[7] * mat._matrix[4] + _matrix[8] * mat._matrix[7],
-		_matrix[3] * mat._matrix[2] + _matrix[7] * mat._matrix[5] + _matrix[8] * mat._matrix[8]
+		_matrix[6] * mat._matrix[0] + _matrix[7] * mat._matrix[3] + _matrix[8] * mat._matrix[6],
+		_matrix[6] * mat._matrix[1] + _matrix[7] * mat._matrix[4] + _matrix[8] * mat._matrix[7],
+		_matrix[6] * mat._matrix[2] + _matrix[7] * mat._matrix[5] + _matrix[8] * mat._matrix[8]
 	});
 }
 

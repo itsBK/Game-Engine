@@ -42,7 +42,7 @@ Vec3 inline GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
 
 bool Vec3::operator!=(const Vec3& other) const
 {
-    return !isZero(x - other.x) || !isZero(y - other.y) || !isZero(z - other.y);
+    return !isZero(x - other.x) || !isZero(y - other.y) || !isZero(z - other.z);
 }
 
 bool Vec3::operator==(const Vec3& other) const

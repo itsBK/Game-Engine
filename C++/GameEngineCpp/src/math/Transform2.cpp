@@ -128,8 +128,8 @@ inline Vec2 Transform2::rotateBackward(const Vec2& target) const
      * equivalent to using cos(-angle) and sin(-angle)
      */
     return {
-        target.x * -forward.x - target.y * -forward.y,
-        target.x * -forward.y + target.y * -forward.x
+        target.x * forward.x + target.y * forward.y,
+        -target.x * forward.y + target.y * forward.x
     };
 }
 
