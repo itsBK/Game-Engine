@@ -25,11 +25,6 @@ Vec2 Vec2::operator-(const Vec2& other) const
     return { x - other.x, y - other.y };
 }
 
-double Vec2::operator*(const Vec2& other) const
-{
-    return x * other.x + y * other.y;
-}
-
 Vec2 Vec2::operator*(const double& scalar) const
 {
     return { x * scalar, y * scalar };
@@ -40,7 +35,12 @@ Vec2 Vec2::operator/(const double& scalar) const
     return { x / scalar, y / scalar };
 }
 
-Vec2 GameEngine::Math::operator*(const double& scalar, const Vec2& vec)
+inline double Vec2::operator*(const Vec2& other) const
+{
+    return dot(other);
+}
+
+inline Vec2 GameEngine::Math::operator*(const double& scalar, const Vec2& vec)
 {
     return vec * scalar;
 }
@@ -134,7 +134,7 @@ Vec2 Vec2::normalized() const
 
 double Vec2::dot(const Vec2& other) const
 {
-    return *this * other;
+    return x * other.x + y * other.y;
 }
 
 double Vec2::cross(const Vec2& other) const
@@ -163,14 +163,4 @@ Vec2 Vec2::mirror(const Vec2& target) const
 {
     Vec2 projected = target >> *this;
     return (projected *= 2) -= target;
-}
-
-double Vec2::dist(const Vec2& a, const Vec2& b)
-{
-    return a.dist(b);
-}
-
-double Vec2::distSq(const Vec2& a, const Vec2& b)
-{
-    return a.distSq(b);
 }

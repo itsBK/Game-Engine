@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "include/math/MathUtils.hpp"
+
 using namespace GameEngine::Math;
 
 
@@ -18,11 +20,6 @@ Vec3 Vec3::operator-(const Vec3& other) const
     return { x - other.x, y - other.y, z - other.z };
 }
 
-double Vec3::operator*(const Vec3& other) const
-{
-    return x * other.x + y * other.y + z * other.z;
-}
-
 Vec3 Vec3::operator*(const double& scalar) const
 {
     return { x * scalar, y * scalar, z * scalar };
@@ -33,7 +30,12 @@ Vec3 Vec3::operator/(const double& scalar) const
     return { x / scalar, y / scalar, z / scalar };
 }
 
-Vec3 GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
+inline double Vec3::operator*(const Vec3& other) const
+{
+    return dot(other);
+}
+
+Vec3 inline GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
 {
     return vec * scalar;
 }
@@ -78,6 +80,16 @@ Vec3& Vec3::operator/=(const double& scalar)
     y /= scalar;
     z /= scalar;
     return *this;
+}
+
+Vec3 Vec3::operator>>(const Vec3& other) const
+{
+    double lengthSq = other.lenSq();
+    if (isZero(lengthSq))
+        return {};
+
+    double length = *this * other / lengthSq;
+    return other * length;
 }
 
 Vec2 Vec3::xy() const
@@ -134,6 +146,11 @@ Vec3 Vec3::normalized() const
     return {};
 }
 
+double Vec3::dot(const Vec3& other) const
+{
+    return x * other.x + y * other.y + z * other.z;
+}
+
 Vec3 Vec3::cross(const Vec3 &other) const
 {
     return {
@@ -141,14 +158,4 @@ Vec3 Vec3::cross(const Vec3 &other) const
         z * other.x - x * other.z,
         x * other.y - y * other.x
     };
-}
-
-double Vec3::dist(const Vec3& a, const Vec3& b)
-{
-    return a.dist(b);
-}
-
-double Vec3::distSq(const Vec3& a, const Vec3& b)
-{
-    return a.distSq(b);
 }

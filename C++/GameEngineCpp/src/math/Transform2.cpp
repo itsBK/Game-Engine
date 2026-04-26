@@ -1,52 +1,59 @@
 #include "include/math/Transform2.hpp"
 
-#include <cmath>
+#include "include/math/Pose2.hpp"
 
 using namespace GameEngine::Math;
 
 
-Transform2::Transform2(double x, double y, double angle)
-    : pos(x, y), angle(angle) {}
+Transform2::Transform2(const Vec2& pos, const Vec2& forward)
+    : pos(pos), forward(forward) {}
 
-Transform2::Transform2(const Vec2& pos, double angle)
-    : pos(pos), angle(angle) {}
-
-Transform2(const Pose2& other)
+Transform2::Transform2(const Pose2& other)
     : pos(other.pos), forward(other.dir()) {}
 
-Transform2& operator=(const Pose2& other)
+Transform2& Transform2::operator=(const Pose2& other)
 {
     pos = other.pos;
-    forward = other.dir()
+    forward = other.dir();
+    return *this;
 }
 
-double Transform2::dist(const Vc2& other) const
+bool Transform2::operator!=(const Transform2 &other) const
+{
+    return pos != other.pos || forward != other.forward;
+}
+
+bool Transform2::operator==(const Transform2 &other) const
+{
+    return pos == other.pos && forward == other.forward;
+}
+
+inline double Transform2::dist(const Vec2& other) const
 {
     return pos.dist(other);
 }
 
-double Transform2::distSq(const Vec2& other) const
+inline double Transform2::distSq(const Vec2& other) const
 {
     return pos.distSq(other);
 }
 
-double Transform2::dist(const Transform2& other) const
+inline double Transform2::dist(const Pose2& other) const
 {
     return pos.dist(other.pos);
 }
 
-double Transform2::distSq(const Transform2& other) const
+inline double Transform2::distSq(const Pose2& other) const
 {
     return pos.distSq(other.pos);
 }
 
-
-double Transform2::dist(const Pose2& other) const
+inline double Transform2::dist(const Transform2& other) const
 {
     return pos.dist(other.pos);
 }
 
-double Transform2::distSq(const Pose2& other) const
+inline double Transform2::distSq(const Transform2& other) const
 {
     return pos.distSq(other.pos);
 }
@@ -54,64 +61,75 @@ double Transform2::distSq(const Pose2& other) const
 Vec2 Transform2::local(const Vec2& target) const
 {
     Vec2 shifted = target - pos;
-    Vec2 rotated = shifted.rotated(-angle);
-    return rotated;
+    return rotateBackward(shifted);
 }
 
 Vec2 Transform2::global(const Vec2& target) const
 {
-    Vec2 rotated = target.rotated(angle);
+    Vec2 rotated = rotateForward(target);
     Vec2 shifted = rotated + pos;
     return shifted;
 }
 
 Transform2 Transform2::local(const Transform2& target) const
 {
-    double d_angle = clampAngle(target.angle - angle);
-    Vec2 shifted = target.pos - pos;
-    Vec2 rotated = shifted.rotated(-angle);
-    return { rotated, d_angle };
+    Vec2 shiftedPos = target.pos - pos;
+    Vec2 rotatedPos = rotateBackward(shiftedPos);
+    return { rotatedPos, rotateBackward(target.forward) };
 }
 
 Transform2 Transform2::global(const Transform2& target) const
 {
-    double d_angle = clampAngle(target.angle + angle);
-    Vec2 rotated = target.pos.rotated(angle);
-    Vec2 shifted = rotated + pos;
-    return { shifted, d_angle };
+    Vec2 rotatedPos = rotateForward(target.pos);
+    Vec2 shiftedPos = rotatedPos + pos;
+    return { shiftedPos, rotateForward(target.forward) };
 }
 
-Vec2 Transform2::dir() const
+inline double Transform2::angle() const
 {
-    return Vec2::FromPolar(1, angle);
+    return forward.angle();
 }
 
-Vec2 Transform2::mirror(const Vec2& target) const
+inline Vec2 Transform2::mirrorVec(const Vec2& target) const
 {
-    return pos.mirror(target);
+    return forward.mirror(target);
+}
+
+inline Vec2 Transform2::mirrorPoint(const Vec2& target) const
+{
+    return forward.mirror(target - pos) + pos;
 }
 
 Transform2 Transform2::mirror(const Transform2& target) const
 {
     return {
-        pos.mirror(target.pos),
-        2*angle - target.angle
+        forward.mirror(target.pos - pos) + pos,
+        forward.mirror(target.forward)
     };
 }
 
-double Transform2::dist(const Transform2& a, const Transform2& b)
+inline Vec2 Transform2::rotateForward(const Vec2& target) const
 {
-    return a.dist(b);
+    /*
+     * rotating is nothing but getting the cos and sin of an angle and
+     * using the multiplication matrix to rotate a target point.
+     * cos and sin of an angle are the x and y of the direction vector,
+     * so we do the same multiplication without calling the expensive forward.angle() function
+     */
+    return {
+        target.x * forward.x - target.y * forward.y,
+        target.x * forward.y + target.y * forward.x
+    };
 }
 
-double Transform2::distSq(const Transform2& a, const Transform2& b)
+inline Vec2 Transform2::rotateBackward(const Vec2& target) const
 {
-    return a.distSq(b);
+    /*
+     * equivalent to using cos(-angle) and sin(-angle)
+     */
+    return {
+        target.x * -forward.x - target.y * -forward.y,
+        target.x * -forward.y + target.y * -forward.x
+    };
 }
 
-double Transform2::clampAngle(double angle)
-{
-    while (angle < -M_PI) angle += 2 * M_PI;
-    while (angle > M_PI) angle -= 2 * M_PI;
-    return angle;
-}

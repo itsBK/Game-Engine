@@ -21,20 +21,26 @@ public:
 
     Vec3 operator+(const Vec3& other) const;
     Vec3 operator-(const Vec3& other) const;
-    double operator*(const Vec3& other) const;
-
     Vec3 operator*(const double& scalar) const;
     Vec3 operator/(const double& scalar) const;
+    /// @return the dot product.
+    inline double operator*(const Vec3& other) const;
 
-    friend Vec3 operator*(const double& scalar, const Vec3& vec);
+    friend inline Vec3 operator*(const double& scalar, const Vec3& vec);
 
     bool operator!=(const Vec3& other) const;
     bool operator==(const Vec3& other) const;
 
+    /// @return a reference to self
     Vec3& operator+=(const Vec3& other);
+    /// @return a reference to self
     Vec3& operator-=(const Vec3& other);
+    /// @return a reference to self
     Vec3& operator*=(const double& scalar);
+    /// @return a reference to self
     Vec3& operator/=(const double& scalar);
+    /// project this vector onto other.
+    Vec3 operator>>(const Vec3& other) const;
 
     Vec2 xy() const;
     Vec2 xz() const;
@@ -45,15 +51,14 @@ public:
     double dist(const Vec3& other) const;
     double distSq(const Vec3& other) const;
 
-    /// <summary>normalize this vector and returns it</summary>
+    /// normalize this vector
+    /// @return reference to self
     Vec3& norm();
-    /// <returns>a normalized copy of this vector</returns>
+    /// @return a normalized copy of this
     Vec3 normalized() const;
+    double dot(const Vec3& other) const;
     Vec3 cross(const Vec3& other) const;
-
-    static double dist(const Vec3& a, const Vec3& b);
-    static double distSq(const Vec3& a, const Vec3& b);
-
 };
+
 }
 

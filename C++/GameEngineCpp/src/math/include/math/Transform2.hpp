@@ -3,6 +3,7 @@
 #include "Vec2.hpp"
 
 namespace GameEngine::Math {
+class Pose2;
 
 class Transform2
 {
@@ -18,15 +19,18 @@ public:
     ~Transform2() = default;
 
     Transform2(const Vec2& pos, const Vec2& forward);
-    Transform2(const Pose2& other);
+    explicit Transform2(const Pose2& other);
     Transform2& operator=(const Pose2& other);
 
-    double dist(const Vec2& other) const;
-    double distSq(const Vec2& other) const;
-    double dist(const Transform2& other) const;
-    double distSq(const Transform2& other) const;
-    double dist(const Pose2& other) const;
-    double distSq(const Pose2& other) const;
+    bool operator!=(const Transform2& other) const;
+    bool operator==(const Transform2& other) const;
+
+    inline double dist(const Vec2& other) const;
+    inline double distSq(const Vec2& other) const;
+    inline double dist(const Pose2& other) const;
+    inline double distSq(const Pose2& other) const;
+    inline double dist(const Transform2& other) const;
+    inline double distSq(const Transform2& other) const;
 
     /// @return local to global transformation
     Vec2 local(const Vec2& target) const;
@@ -38,15 +42,18 @@ public:
     Transform2 global(const Transform2& target) const;
 
     /// angle of the forward vector
-    double angle() const;
+    inline double angle() const;
 
     /// mirror target over this transform
-    Vec2 mirror(const Vec2& target) const;
+    inline Vec2 mirrorVec(const Vec2& target) const;
+    /// mirror target over this transform
+    inline Vec2 mirrorPoint(const Vec2& target) const;
     /// mirror target over this transform
     Transform2 mirror(const Transform2& target) const;
 
-    static double dist(const Transform2& a, const Transform2& b);
-    static double distSq(const Transform2& a, const Transform2& b);
+private:
+    inline Vec2 rotateForward(const Vec2& target) const;
+    inline Vec2 rotateBackward(const Vec2& target) const;
 };
 
 }
