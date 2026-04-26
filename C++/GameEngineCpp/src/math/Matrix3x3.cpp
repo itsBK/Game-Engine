@@ -27,7 +27,7 @@ Matrix3x3::Row::Row(double* matrix, const unsigned int& rowNum)
 	_rowNum = rowNum;
 }
 
-double& Matrix3x3::Row::operator[](const unsigned int& col)
+double& Matrix3x3::Row::operator[](const unsigned int& col) const
 {
 	return _matrix[3 * _rowNum + col];
 }

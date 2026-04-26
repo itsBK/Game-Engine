@@ -27,7 +27,7 @@ public:
     {
     public:
         explicit Row(double* matrix, const unsigned int& rowNum);
-        double& operator[](const unsigned int& index);
+        double& operator[](const unsigned int& index) const;
     private:
         unsigned int _rowNum;
         double* _matrix;
