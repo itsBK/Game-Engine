@@ -6,6 +6,7 @@
 
 using namespace GameEngine::Math;
 
+
 inline Matrix3x3::Matrix3x3(const std::array<double, 9>& matrix)
 	: _matrix {
 		matrix[0], matrix[1], matrix[2],
@@ -95,9 +96,27 @@ Matrix3x3 Matrix3x3::operator*(const Matrix3x3& mat) const
 		_matrix[3] * mat._matrix[1] + _matrix[4] * mat._matrix[4] + _matrix[5] * mat._matrix[7],
 		_matrix[3] * mat._matrix[2] + _matrix[4] * mat._matrix[5] + _matrix[5] * mat._matrix[8],
 
-		_matrix[6] * mat._matrix[0] + _matrix[7] * mat._matrix[3] + _matrix[8] * mat._matrix[6],
-		_matrix[6] * mat._matrix[1] + _matrix[7] * mat._matrix[4] + _matrix[8] * mat._matrix[7],
-		_matrix[6] * mat._matrix[2] + _matrix[7] * mat._matrix[5] + _matrix[8] * mat._matrix[8]
+		_matrix[3] * mat._matrix[0] + _matrix[7] * mat._matrix[3] + _matrix[8] * mat._matrix[6],
+		_matrix[3] * mat._matrix[1] + _matrix[7] * mat._matrix[4] + _matrix[8] * mat._matrix[7],
+		_matrix[3] * mat._matrix[2] + _matrix[7] * mat._matrix[5] + _matrix[8] * mat._matrix[8]
+	});
+}
+
+Matrix3x3 Matrix3x3::operator*(const double &scalar) const
+{
+	return Matrix3x3({
+		scalar * _matrix[0], scalar * _matrix[1], scalar * _matrix[2],
+		scalar * _matrix[3], scalar * _matrix[4], scalar * _matrix[5],
+		scalar * _matrix[6], scalar * _matrix[7], scalar * _matrix[8]
+	});
+}
+
+Matrix3x3 Matrix3x3::operator/(const double &scalar) const
+{
+	return Matrix3x3({
+		_matrix[0] / scalar, _matrix[1] / scalar, _matrix[2] / scalar,
+		_matrix[3] / scalar, _matrix[4] / scalar, _matrix[5] / scalar,
+		_matrix[6] / scalar, _matrix[7] / scalar, _matrix[8] / scalar
 	});
 }
 
@@ -110,12 +129,31 @@ Vec3 Matrix3x3::operator*(const Vec3& vec) const
 	};
 }
 
+inline Matrix3x3 GameEngine::Math::operator*(const double& scalar, const Matrix3x3& other)
+{
+	return other * scalar;
+}
+
+Matrix3x3& Matrix3x3::operator*=(const double& scalar)
+{
+	Matrix3x3 newMat = *this * scalar;
+	*this = newMat;
+	return *this;
+}
+
+Matrix3x3& Matrix3x3::operator/=(const double& scalar)
+{
+	Matrix3x3 newMat = *this / scalar;
+	*this = newMat;
+	return *this;
+}
+
 Matrix3x3 Matrix3x3::rotate(double angleX, double angleY, double angleZ, MultiplicationOrder order)
 {
 
-	Matrix3x3 matZ = (int) (angleZ * EPSILON) != 0 ? rotateZ(angleZ) : identity();
-	Matrix3x3 matY = (int) (angleY * EPSILON) != 0 ? rotateY(angleY) : identity();
-	Matrix3x3 matX = (int) (angleX * EPSILON) != 0 ? rotateX(angleX) : identity();
+	Matrix3x3 matZ = !isZero(angleZ) ? rotateZ(angleZ) : identity();
+	Matrix3x3 matY = !isZero(angleY) ? rotateY(angleY) : identity();
+	Matrix3x3 matX = !isZero(angleX) ? rotateX(angleX) : identity();
 
 	switch (order)
 	{

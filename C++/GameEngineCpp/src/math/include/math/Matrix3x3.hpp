@@ -49,8 +49,17 @@ public:
     static Matrix3x3 rotateY(double radians);
     static Matrix3x3 rotateZ(double radians);
 
+    Matrix3x3 operator*(const double& scalar) const;
+    Matrix3x3 operator/(const double& scalar) const;
     Matrix3x3 operator*(const Matrix3x3& other) const;
     Vec3 operator*(const Vec3& other) const;
+
+    friend inline Matrix3x3 operator*(const double& scalar, const Matrix3x3& other);
+
+    /// @return a reference to self
+    Matrix3x3& operator*=(const double& scalar);
+    /// @return a reference to self
+    Matrix3x3& operator/=(const double& scalar);
 
     /// in radian
     static Matrix3x3 rotate(double angleX, double angleY, double angleZ,
