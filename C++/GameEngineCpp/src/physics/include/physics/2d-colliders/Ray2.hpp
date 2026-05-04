@@ -4,9 +4,10 @@
 #include <vector>
 #include <math/Vec2.hpp>
 
+#include "Collider2.hpp"
+
 namespace GameEngine::Physics {
 using namespace GameEngine::Math;
-class Collider2;
 
 class Ray2
 {
@@ -25,9 +26,9 @@ public:
     /// @return first collision, if any exists
     std::optional<Vec2> cast() const;
     /// @return a list of all colliders that the ray collided with, if any exists
-    std::optional<std::vector<Collider2>> castAll() const;
-    /// @return collision point, if it exists
-    std::optional<Vec2> collideWith(const Collider2& other) const;
+    std::optional<std::vector<Bounds::Collider2>> castAll() const;
+    /// @return collision point, if any exists
+    std::optional<Vec2> collideWith(const Bounds::Collider2& other) const;
 };
 
 }

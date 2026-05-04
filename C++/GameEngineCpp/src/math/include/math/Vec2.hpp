@@ -62,6 +62,8 @@ public:
     Vec2 rotated(double angle) const;
     /// mirror target over this vector
     Vec2 mirror(const Vec2& target) const;
+    /// @return the perpendicular vector on this one, rotated 90° CCW
+    inline Vec2 perp() const;
 };
 
 }
