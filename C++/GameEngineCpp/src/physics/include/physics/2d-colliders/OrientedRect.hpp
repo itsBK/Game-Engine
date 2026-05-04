@@ -30,12 +30,11 @@ public:
     bool operator!=(const OrientedRect& other) const;
     bool operator==(const OrientedRect& other) const;
 
-    inline Vec2 left() const;
-    //TODO: those should be updated automatically in the physics update step
-    const Rect& AABB();
-    const std::array<Vec2, 4>& corners();
-
     bool contains(const Vec2& point);
+
+    //TODO: those should be updated automatically in the physics update step
+    const Rect& calcAABB();
+    const std::array<Vec2, 4>& corners();
 };
 
 }

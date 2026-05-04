@@ -21,15 +21,20 @@ bool OrientedRect::operator==(const OrientedRect& other) const
     return transform == other.transform && size == other.size;
 }
 
-inline Vec2 OrientedRect::left() const
+bool OrientedRect::contains(const Vec2& point)
 {
-    return transform.forward.perp();
+    if (!calcAABB().contains(point))
+        return false;
+
+    Vec2 local0 = transform.local(point);
+    return std::abs(local0.x) <= size.x * 0.5
+        && std::abs(local0.y) <= size.y * 0.5;
 }
 
-const Rect& OrientedRect::AABB()
+const Rect& OrientedRect::calcAABB()
 {
     Vec2 front = transform.forward * (size.x * 0.5);
-    Vec2 left0 = left() * (size.y * 0.5);
+    Vec2 left0 = transform.left() * (size.y * 0.5);
 
     Vec2 corner0 = left0 + front;
     Vec2 corner1 = left0 - front;
@@ -43,24 +48,11 @@ const Rect& OrientedRect::AABB()
 const std::array<Vec2, 4>& OrientedRect::corners()
 {
     Vec2 front = transform.forward * (size.x * 0.5);
-    Vec2 left0 = left() * (size.y * 0.5);
+    Vec2 left0 = transform.left() * (size.y * 0.5);
 
-    _corners[0] = transform.pos + front + left0;
-    _corners[1] = transform.pos - front + left0;
-    _corners[2] = transform.pos - front - left0;
-    _corners[3] = transform.pos + front - left0;
-
+    _corners[0] = transform.pos + left0 + front;
+    _corners[1] = transform.pos + left0 - front;
+    _corners[2] = transform.pos - left0 - front;
+    _corners[3] = transform.pos - left0 + front;
     return _corners;
-}
-
-bool OrientedRect::contains(const Vec2& point)
-{
-    if (!AABB().contains(point))
-        return false;
-
-    // the equivalent of translating to local coordinates without using trigonometry (cos and sin)
-    Vec2 diff = (point - transform.pos);
-    Vec2 local = { diff * transform.forward, diff * left() };
-
-    return std::abs(local.x) <= size.x * 0.5 && std::abs(local.y) <= size.y * 0.5;
 }

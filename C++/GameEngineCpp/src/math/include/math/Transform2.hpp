@@ -43,6 +43,7 @@ public:
 
     /// angle of the forward vector
     inline double angle() const;
+    inline Vec2 left() const;
 
     /// mirror target over this transform
     inline Vec2 mirrorVec(const Vec2& target) const;

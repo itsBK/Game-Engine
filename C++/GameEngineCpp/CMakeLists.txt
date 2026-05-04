@@ -22,4 +22,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC src/os/include)
 
 add_subdirectory(src)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC GameEngine.Math)
+target_link_libraries(${PROJECT_NAME} PUBLIC GameEngine.Math GameEngine.Physics)

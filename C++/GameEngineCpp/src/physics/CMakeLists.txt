@@ -5,7 +5,9 @@ add_library(${PROJECT_NAME} SHARED
     Rect.cpp
     OrientedRect.cpp
     Sphere.cpp
-    AABB.cpp)
+    AABB.cpp
+    OBB.cpp
+    CollisionDetection.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} PRIVATE GameEngine.Math)

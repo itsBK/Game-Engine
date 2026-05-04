@@ -8,7 +8,7 @@ using namespace GameEngine::Math;
 class AABB
 {
 public:
-    Vec3 pos = {};
+    Vec3 center = {};
     Vec3 size = {1,1,1};
 
     AABB() = default;

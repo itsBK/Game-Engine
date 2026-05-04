@@ -90,6 +90,11 @@ inline double Transform2::angle() const
     return forward.angle();
 }
 
+inline Vec2 Transform2::left() const
+{
+    return forward.perp();
+}
+
 inline Vec2 Transform2::mirrorVec(const Vec2& target) const
 {
     return forward.mirror(target);

@@ -109,10 +109,9 @@ inline Vec3 Transform3::rotateBackward(const Vec3& target) const
      * so the transpose of that is each vector representing a row.
      * multiplication is then just the dot product
      */
-    Vec3 u = up();
     return {
         target.dot(forward),
         target.dot(left),
-        target.dot(u)
+        target.dot(up())
     };
 }
