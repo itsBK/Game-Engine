@@ -6,15 +6,16 @@
 using namespace GameEngine::Physics;
 using namespace GameEngine::Math;
 
-
 bool CollisionDetector::check(const Bounds::Collider2& a, const Bounds::Collider2& b)
 {
-    return std::visit(_visitor2, a, b);
+    static Visitor2 visitor2;
+    return std::visit(visitor2, a, b);
 }
 
 bool CollisionDetector::check(const Bounds::Collider3& a, const Bounds::Collider3& b)
 {
-    return std::visit(_visitor3, a, b);
+    static Visitor3 visitor3;
+    return std::visit(visitor3, a, b);
 }
 
 

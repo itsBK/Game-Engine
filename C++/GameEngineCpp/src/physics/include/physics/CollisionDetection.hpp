@@ -46,9 +46,6 @@ private:
         inline bool operator()(const Bounds::OBB& a, const Bounds::Sphere& b) const;
         inline bool operator()(const Bounds::OBB& a, const Bounds::AABB& b) const;
     };
-
-    static Visitor2 _visitor2;
-    static Visitor3 _visitor3;
 };
 
 }
