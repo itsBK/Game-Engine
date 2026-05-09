@@ -21,9 +21,16 @@ bool OrientedRect::operator==(const OrientedRect& other) const
     return transform == other.transform && size == other.size;
 }
 
-bool OrientedRect::contains(const Vec2& point)
+void OrientedRect::update(const Transform2& pos)
 {
-    if (!calcAABB().contains(point))
+    transform = pos;
+    updateAABB();
+    updateCorners();
+}
+
+bool OrientedRect::contains(const Vec2& point) const
+{
+    if (!_aabb.contains(point))
         return false;
 
     Vec2 local0 = transform.local(point);
@@ -31,7 +38,17 @@ bool OrientedRect::contains(const Vec2& point)
         && std::abs(local0.y) <= size.y * 0.5;
 }
 
-const Rect& OrientedRect::calcAABB()
+const Rect& OrientedRect::aabb() const
+{
+    return _aabb;
+}
+
+const std::array<Vec2, 4>& OrientedRect::corners() const
+{
+    return _corners;
+}
+
+void OrientedRect::updateAABB()
 {
     Vec2 front = transform.forward * (size.x * 0.5);
     Vec2 left0 = transform.left() * (size.y * 0.5);
@@ -42,10 +59,9 @@ const Rect& OrientedRect::calcAABB()
     _aabb.center = transform.pos;
     _aabb.size.x = 2 * std::max(std::abs(corner0.x), std::abs(corner1.x));
     _aabb.size.y = 2 * std::max(std::abs(corner0.y), std::abs(corner1.y));
-    return _aabb;
 }
 
-const std::array<Vec2, 4>& OrientedRect::corners()
+void OrientedRect::updateCorners()
 {
     Vec2 front = transform.forward * (size.x * 0.5);
     Vec2 left0 = transform.left() * (size.y * 0.5);
@@ -54,5 +70,4 @@ const std::array<Vec2, 4>& OrientedRect::corners()
     _corners[1] = transform.pos + left0 - front;
     _corners[2] = transform.pos - left0 - front;
     _corners[3] = transform.pos - left0 + front;
-    return _corners;
 }

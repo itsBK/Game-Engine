@@ -10,6 +10,15 @@ using namespace GameEngine::Math;
 Vec3::Vec3(double x, double y, double z)
     : x(x), y(y), z(z) {}
 
+Vec3 Vec3::clamp(const Vec3& value, const Vec3& min, const Vec3& max)
+{
+    return Vec3{
+        Math::clamp(value.x, min.x, max.x),
+        Math::clamp(value.y, min.y, max.y),
+        Math::clamp(value.z, min.z, max.z)
+    };
+}
+
 Vec3 Vec3::operator+(const Vec3& other) const
 {
     return { x + other.x, y + other.y, z + other.z };

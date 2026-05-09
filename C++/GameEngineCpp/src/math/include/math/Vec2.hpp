@@ -16,6 +16,7 @@ public:
 
     Vec2(double x, double y);
     static Vec2 FromPolar(double radius, double angle);
+    static Vec2 clamp(const Vec2& value, const Vec2& min, const Vec2& max);
 
     Vec2 operator+(const Vec2& other) const;
     Vec2 operator-(const Vec2& other) const;
@@ -63,7 +64,7 @@ public:
     /// mirror target over this vector
     Vec2 mirror(const Vec2& target) const;
     /// @return the perpendicular vector on this one, rotated 90° CCW
-    inline Vec2 perp() const;
+    Vec2 perp() const;
 };
 
 }

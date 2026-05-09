@@ -19,25 +19,30 @@ bool Rect::operator==(const Rect& other) const
     return center == other.center && size == other.size;
 }
 
-inline Vec2 Rect::min() const
+void Rect::update(const Transform2& transform, const Vec2& offset)
 {
-    return center - size * 0.5;
+    center = transform.pos + offset;
+    m_min = center - size * 0.5;
+    m_max = center + size * 0.5;
 }
 
-inline Vec2 Rect::max() const
+const Vec2& Rect::min() const
 {
-    return center + size * 0.5;
+    return m_min;
+}
+
+const Vec2& Rect::max() const
+{
+    return m_max;
 }
 
 bool Rect::contains(const Vec2& point) const
 {
-    Vec2 m = min();
-    Vec2 mx = max();
-    return point.x >= m.x && point.x <= mx.x &&
-           point.y >= m.y && point.y <= mx.y;
+    return point.x >= m_min.x && point.x <= m_max.x &&
+           point.y >= m_min.y && point.y <= m_max.y;
 }
 
 bool Rect::contains(const Rect& other) const
 {
-    return contains(other.min()) && contains(other.max());
+    return contains(other.m_min) && contains(other.m_max);
 }

@@ -2,11 +2,16 @@
 
 #include <math/Vec2.hpp>
 
+#include "math/Transform2.hpp"
+
 namespace GameEngine::Physics::Bounds {
 using namespace GameEngine::Math;
 
 class Rect
 {
+    Vec2 m_min;
+    Vec2 m_max;
+
 public:
     Vec2 center = {};
     Vec2 size = {1, 1};
@@ -22,8 +27,10 @@ public:
     bool operator!=(const Rect& other) const;
     bool operator==(const Rect& other) const;
 
-    inline Vec2 min() const;
-    inline Vec2 max() const;
+    void update(const Transform2& transform, const Vec2& offset);
+
+    const Vec2& min() const;
+    const Vec2& max() const;
 
     bool contains(const Vec2& point) const;
     bool contains(const Rect& other) const;

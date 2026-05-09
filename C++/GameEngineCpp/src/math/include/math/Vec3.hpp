@@ -18,6 +18,7 @@ public:
     ~Vec3() = default;
 
     Vec3(double x, double y, double z);
+    static Vec3 clamp(const Vec3& value, const Vec3& min, const Vec3& max);
 
     Vec3 operator+(const Vec3& other) const;
     Vec3 operator-(const Vec3& other) const;

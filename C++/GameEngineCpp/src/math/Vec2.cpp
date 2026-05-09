@@ -15,6 +15,14 @@ Vec2 Vec2::FromPolar(double radius, double angle)
     return { radius * std::cos(angle), radius * std::sin(angle) };
 }
 
+Vec2 Vec2::clamp(const Vec2& value, const Vec2& min, const Vec2& max)
+{
+    return Vec2{
+        Math::clamp(value.x, min.x, max.x),
+        Math::clamp(value.y, min.y, max.y)
+    };
+}
+
 Vec2 Vec2::operator+(const Vec2& other) const
 {
     return { x + other.x, y + other.y };
@@ -165,7 +173,7 @@ Vec2 Vec2::mirror(const Vec2& target) const
     return (projected *= 2) -= target;
 }
 
-inline Vec2 Vec2::perp() const
+Vec2 Vec2::perp() const
 {
     return { -y, x };
 }
