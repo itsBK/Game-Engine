@@ -85,14 +85,14 @@ Transform2 Transform2::global(const Transform2& target) const
     return { shiftedPos, rotateForward(target.forward) };
 }
 
-inline double Transform2::angle() const
+double Transform2::angle() const
 {
     return forward.angle();
 }
 
-inline Vec2 Transform2::left() const
+Vec2 Transform2::left() const
 {
-    return forward.perp();
+    return { -forward.y, forward.x };
 }
 
 inline Vec2 Transform2::mirrorVec(const Vec2& target) const

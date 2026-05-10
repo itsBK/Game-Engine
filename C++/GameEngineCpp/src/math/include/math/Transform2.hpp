@@ -42,8 +42,8 @@ public:
     Transform2 global(const Transform2& target) const;
 
     /// angle of the forward vector
-    inline double angle() const;
-    inline Vec2 left() const;
+    double angle() const;
+    Vec2 left() const;
 
     /// mirror target over this transform
     inline Vec2 mirrorVec(const Vec2& target) const;

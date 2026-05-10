@@ -172,8 +172,3 @@ Vec2 Vec2::mirror(const Vec2& target) const
     Vec2 projected = target >> *this;
     return (projected *= 2) -= target;
 }
-
-Vec2 Vec2::perp() const
-{
-    return { -y, x };
-}
