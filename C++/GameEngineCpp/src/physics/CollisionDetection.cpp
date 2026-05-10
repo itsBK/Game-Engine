@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <variant>
-#include <math/MathUtils.hpp>
 
 using namespace GameEngine::Physics;
 using namespace GameEngine::Physics::Bounds;
@@ -52,8 +51,7 @@ inline bool CollisionDetector::Visitor2::operator()(const Rect& a, const Rect& b
 
 inline bool CollisionDetector::Visitor2::operator()(const Rect& a, const OrientedRect& b) const
 {
-    auto b_aabb = b.aabb();
-    if (!(*this)(a, b_aabb))
+    if (!(*this)(a, b.aabb()))
         return false;
 
     std::array<Vec2, 4> axes {
@@ -68,7 +66,7 @@ inline bool CollisionDetector::Visitor2::operator()(const Rect& a, const Oriente
 
     for (const auto& axe : axes)
     {
-        double a_min = INFINITY, a_max = -INFINITY;
+        double a_min = INFINITY, a_max = -1.0 * INFINITY;
         for (const auto& corner : aCorners)
         {
             auto cornerLoc = corner * axe;
@@ -76,7 +74,7 @@ inline bool CollisionDetector::Visitor2::operator()(const Rect& a, const Oriente
             if (cornerLoc > a_max) a_max = cornerLoc;
         }
 
-        double b_min = INFINITY, b_max = -INFINITY;
+        double b_min = INFINITY, b_max = -1.0 * INFINITY;
         for (const auto& corner : bCorners)
         {
             auto cornerLoc = corner * axe;
@@ -106,7 +104,7 @@ inline bool CollisionDetector::Visitor2::operator()(const OrientedRect& a, const
 
     for (const auto& axe : axes)
     {
-        double a_min = INFINITY, a_max = -INFINITY;
+        double a_min = INFINITY, a_max = -1.0 * INFINITY;
         for (const auto& corner : aCorners)
         {
             auto cornerLoc = corner * axe;
@@ -114,7 +112,7 @@ inline bool CollisionDetector::Visitor2::operator()(const OrientedRect& a, const
             if (cornerLoc > a_max) a_max = cornerLoc;
         }
 
-        double b_min = INFINITY, b_max = -INFINITY;
+        double b_min = INFINITY, b_max = -1.0 * INFINITY;
         for (const auto& corner : bCorners)
         {
             auto cornerLoc = corner * axe;
@@ -182,14 +180,88 @@ inline bool CollisionDetector::Visitor3::operator()(const AABB& a, const AABB& b
 
 inline bool CollisionDetector::Visitor3::operator()(const AABB& a, const OBB& b) const
 {
-    //TODO
-    return false;
+    if (!(*this)(a, b.aabb()))
+        return false;
+
+    std::array<Vec3, 6> axes {
+        Vec3{1, 0, 0}, Vec3{0, 1, 0}, Vec3{0, 0, 1},
+        b.transform.forward, b.transform.left, b.transform.up()
+    };
+
+    const auto& min = a.min();
+    const auto& max = a.min();
+    const auto& aCorners = std::array<Vec3, 8>{
+        a.min(), a.max(),
+        Vec3{ min.x, min.y, max.z },
+        Vec3{ min.x, max.y, min.z },
+        Vec3{ max.x, min.y, min.z },
+        Vec3{ max.x, max.y, min.z },
+        Vec3{ max.x, min.y, max.z },
+        Vec3{ min.x, max.y, max.z }
+    };
+    const auto& bCorners = b.corners();
+
+    for (const auto& axe : axes)
+    {
+        double a_min = INFINITY, a_max = -1.0 * INFINITY;
+        for (const auto& corner : aCorners)
+        {
+            auto cornerLoc = corner * axe;
+            if (cornerLoc < a_min) a_min = cornerLoc;
+            if (cornerLoc > a_max) a_max = cornerLoc;
+        }
+
+        double b_min = INFINITY, b_max = -1.0 * INFINITY;
+        for (const auto& corner : bCorners)
+        {
+            auto cornerLoc = corner * axe;
+            if (cornerLoc < b_min) b_min = cornerLoc;
+            if (cornerLoc > b_max) b_max = cornerLoc;
+        }
+
+        if (a_min > b_max || b_min > a_max)
+            return false;
+    }
+
+    return true;
 }
 
 inline bool CollisionDetector::Visitor3::operator()(const OBB& a, const OBB& b) const
 {
-    //TODO
-    return false;
+    if (!(*this)(a.aabb(), b.aabb()))
+        return false;
+
+    std::array<Vec3, 6> axes {
+        a.transform.forward, a.transform.left, a.transform.up(),
+        b.transform.forward, b.transform.left, b.transform.up()
+    };
+
+    const auto& aCorners = a.corners();
+    const auto& bCorners = b.corners();
+
+    for (const auto& axe : axes)
+    {
+        double a_min = INFINITY, a_max = -1.0 * INFINITY;
+        for (const auto& corner : aCorners)
+        {
+            auto cornerLoc = corner * axe;
+            if (cornerLoc < a_min) a_min = cornerLoc;
+            if (cornerLoc > a_max) a_max = cornerLoc;
+        }
+
+        double b_min = INFINITY, b_max = -1.0 * INFINITY;
+        for (const auto& corner : bCorners)
+        {
+            auto cornerLoc = corner * axe;
+            if (cornerLoc < b_min) b_min = cornerLoc;
+            if (cornerLoc > b_max) b_max = cornerLoc;
+        }
+
+        if (a_min > b_max || b_min > a_max)
+            return false;
+    }
+
+    return true;
 }
 
 inline bool CollisionDetector::Visitor3::operator()(const AABB& a, const Sphere& b) const

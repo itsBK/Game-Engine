@@ -19,23 +19,30 @@ bool AABB::operator==(const AABB& other) const
     return center == other.center && size == other.size;
 }
 
-inline Vec3 AABB::min() const
+void AABB::update(const Transform3 &transform, const Vec3 &offset)
 {
-    return center - size * 0.5;
+    center = transform.pos;
+    center += transform.local(offset);
+    m_min = center - size * 0.5;
+    m_max = center + size * 0.5;
 }
 
-inline Vec3 AABB::max() const
+
+const Vec3& AABB::min() const
 {
-    return center + size * 0.5;
+    return m_min;
+}
+
+const Vec3& AABB::max() const
+{
+    return m_max;
 }
 
 bool AABB::contains(const Vec3& point) const
 {
-    Vec3 m = min();
-    Vec3 mx = max();
-    return point.x >= m.x && point.x <= mx.x &&
-           point.y >= m.y && point.y <= mx.y &&
-           point.z >= m.z && point.z <= mx.z;
+    return point.x >= m_min.x && point.x <= m_max.x &&
+           point.y >= m_min.y && point.y <= m_max.y &&
+           point.z >= m_min.z && point.z <= m_max.z;
 }
 
 bool AABB::contains(const AABB& other) const

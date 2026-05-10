@@ -30,10 +30,9 @@ public:
     bool operator!=(const OrientedRect& other) const;
     bool operator==(const OrientedRect& other) const;
 
-    void update(const Transform2& pos);
+    void update(const Transform2& pos, const Vec2& offset = {});
     bool contains(const Vec2& point) const;
 
-    //TODO: those should be updated automatically in the physics update step
     const Rect& aabb() const;
     const std::array<Vec2, 4>& corners() const;
 

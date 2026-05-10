@@ -21,7 +21,8 @@ bool Rect::operator==(const Rect& other) const
 
 void Rect::update(const Transform2& transform, const Vec2& offset)
 {
-    center = transform.pos + offset;
+    center = transform.pos;
+    center += transform.local(offset);
     m_min = center - size * 0.5;
     m_max = center + size * 0.5;
 }

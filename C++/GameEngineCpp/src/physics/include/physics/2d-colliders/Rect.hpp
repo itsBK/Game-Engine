@@ -2,7 +2,7 @@
 
 #include <math/Vec2.hpp>
 
-#include "math/Transform2.hpp"
+#include <math/Transform2.hpp>
 
 namespace GameEngine::Physics::Bounds {
 using namespace GameEngine::Math;
@@ -22,12 +22,12 @@ public:
     ~Rect() = default;
 
     Rect(const Vec2& center, const Vec2& size);
-    Rect(const Vec2& min, const Vec2& max, bool isMinMax);
+    Rect(const Vec2& min, const Vec2& max, bool MinMax);
 
     bool operator!=(const Rect& other) const;
     bool operator==(const Rect& other) const;
 
-    void update(const Transform2& transform, const Vec2& offset);
+    void update(const Transform2& transform, const Vec2& offset = {});
 
     const Vec2& min() const;
     const Vec2& max() const;

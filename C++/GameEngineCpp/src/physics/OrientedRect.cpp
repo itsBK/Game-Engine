@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "math/Vec3.hpp"
+
 using namespace GameEngine::Physics::Bounds;
 
 
@@ -21,9 +23,10 @@ bool OrientedRect::operator==(const OrientedRect& other) const
     return transform == other.transform && size == other.size;
 }
 
-void OrientedRect::update(const Transform2& pos)
+void OrientedRect::update(const Transform2& pos, const Vec2& offset)
 {
     transform = pos;
+    transform.pos += pos.local(offset);
     updateAABB();
     updateCorners();
 }

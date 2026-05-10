@@ -21,9 +21,17 @@ bool OBB::operator==(const OBB& other) const
     return transform == other.transform && size == other.size;
 }
 
-bool OBB::contains(const Vec3& point)
+void OBB::update(const Transform3& pos, const Vec3& offset)
 {
-    if (!calcAABB().contains(point))
+    transform = pos;
+    transform.pos += pos.local(offset);
+    updateAABB();
+    updateCorners();
+}
+
+bool OBB::contains(const Vec3& point) const
+{
+    if (!_aabb.contains(point))
         return false;
 
     Vec3 local0 = transform.local(point);
@@ -33,7 +41,17 @@ bool OBB::contains(const Vec3& point)
         && std::abs(local0.z) <= size.z * 0.5;
 }
 
-const AABB& OBB::calcAABB()
+const AABB& OBB::aabb() const
+{
+    return _aabb;
+}
+
+const std::array<Vec3, 8>& OBB::corners() const
+{
+    return _corners;
+}
+
+void OBB::updateAABB()
 {
     Vec3 f = transform.forward * (size.x * 0.5);
     Vec3 l = transform.left * (size.y * 0.5);
@@ -51,10 +69,9 @@ const AABB& OBB::calcAABB()
                                 std::max(std::abs(corner2.y), std::abs(corner3.y)));
     _aabb.size.z = 2 * std::max(std::max(std::abs(corner0.z), std::abs(corner1.z)),
                                 std::max(std::abs(corner2.z), std::abs(corner3.z)));
-    return _aabb;
 }
 
-const std::array<Vec3, 8>& OBB::corners()
+void OBB::updateCorners()
 {
     Vec3 f = transform.forward * size.x * 0.5;
     Vec3 l = transform.left * size.y * 0.5;
@@ -68,5 +85,4 @@ const std::array<Vec3, 8>& OBB::corners()
     _corners[5] = transform.pos - u - l - f;
     _corners[6] = transform.pos - u + l - f;
     _corners[7] = transform.pos - u + l + f;
-    return _corners;
 }
