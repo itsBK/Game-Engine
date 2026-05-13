@@ -27,7 +27,7 @@ public:
     /// @return the dot product.
     inline double operator*(const Vec3& other) const;
 
-    friend inline Vec3 operator*(const double& scalar, const Vec3& vec);
+    friend Vec3 operator*(const double& scalar, const Vec3& vec);
 
     bool operator!=(const Vec3& other) const;
     bool operator==(const Vec3& other) const;

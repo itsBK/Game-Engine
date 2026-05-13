@@ -6,7 +6,6 @@ add_library(${PROJECT_NAME} SHARED
     Pose2.cpp
     Transform2.cpp
     Transform3.cpp
-    Matrix3x3.cpp
-    MathUtils.cpp)
+    Matrix3x3.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)

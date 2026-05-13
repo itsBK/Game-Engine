@@ -44,7 +44,7 @@ inline double Vec3::operator*(const Vec3& other) const
     return dot(other);
 }
 
-Vec3 inline GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
+Vec3 GameEngine::Math::operator*(const double& scalar, const Vec3& vec)
 {
     return vec * scalar;
 }
