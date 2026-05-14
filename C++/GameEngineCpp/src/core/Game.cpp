@@ -3,11 +3,11 @@
 using namespace GameEngine::Core;
 
 
-Game::Game(std::string&& title)
-    : title(std::move(title)) {}
+Game::Game(const std::string& title)
+    : title(title) {}
 
-Game::Game(std::string&& title, int width, int height)
-    : title(std::move(title)), width(width), height(height) {}
+Game::Game(const std::string& title, int width, int height)
+    : title(title), width(width), height(height) {}
 
 Game::~Game() = default;
 

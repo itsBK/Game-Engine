@@ -21,8 +21,8 @@ public:
     int height = 600;
 
     Game() = default;
-    explicit Game(std::string&& title);
-    Game(std::string&& title, int width, int height);
+    Game(const std::string& title);
+    Game(const std::string& title, int width, int height);
     ~Game();
 
     ///

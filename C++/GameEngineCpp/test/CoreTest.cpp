@@ -8,7 +8,7 @@ int height = 600;
 
 int main()
 {
-    GameEngine::Core::Game game = GameEngine::Core::Game("our awesome game");
+    GameEngine::Core::Game game{"our awesome game" };
     if (!game.Init())
         return -1;
 
