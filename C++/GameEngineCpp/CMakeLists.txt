@@ -8,7 +8,7 @@ add_subdirectory(3rdParty)
 add_subdirectory(src)
 
 add_library(${PROJECT_NAME} SHARED
-    src/core/Application.cpp)
+    src/core/Game.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/core/include)
 target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw)
