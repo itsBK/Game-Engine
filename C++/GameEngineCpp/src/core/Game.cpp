@@ -3,11 +3,11 @@
 using namespace GameEngine::Core;
 
 
-Game::Game(const std::string& title)
-    : title(title) {}
+Game::Game(std::string title)
+    : title(std::move(title)) {}
 
-Game::Game(const std::string& title, int width, int height)
-    : title(title), width(width), height(height) {}
+Game::Game(std::string title, int width, int height)
+    : title(std::move(title)), width(width), height(height) {}
 
 Game::~Game() = default;
 
@@ -40,8 +40,7 @@ bool Game::Init()
 
 void Game::Loop(const std::function<void()>& updateFunc, const std::function<void()>& renderFunc)
 {
-    //TODO: encapsulate shouldClose func
-    while (!glfwWindowShouldClose(_window))
+    while (!ShouldShutdown())
     {
         updateFunc();
         renderFunc();
@@ -51,6 +50,17 @@ void Game::Loop(const std::function<void()>& updateFunc, const std::function<voi
         /* Poll for and process events */
         glfwPollEvents();
     }
+    Shutdown();
+}
+
+bool Game::ShouldShutdown() const
+{
+    return shutdownRequested || glfwWindowShouldClose(_window);
+}
+
+void Game::RequestShutdown()
+{
+    shutdownRequested = true;
 }
 
 void Game::Shutdown()
@@ -59,8 +69,7 @@ void Game::Shutdown()
     glfwTerminate();
 }
 
-GLFWwindow* Game::GetWindow() const
+GLFWwindow* Game::GetWindow()
 {
     return _window;
 }
-

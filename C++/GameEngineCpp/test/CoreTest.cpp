@@ -3,12 +3,10 @@
 
 #include <core/Game.hpp>
 
-int width = 800;
-int height = 600;
 
 int main()
 {
-    GameEngine::Core::Game game{"our awesome game" };
+    auto game = GameEngine::Core::Game { "our awesome game" };
     if (!game.Init())
         return -1;
 
@@ -49,10 +47,10 @@ int main()
     GLuint bufferHandle[2];
     glGenBuffers(2, bufferHandle);
     glBindBuffer(GL_ARRAY_BUFFER, bufferHandle[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(buffer) / 2, &buffer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(buffer) / 2, &buffer, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, bufferHandle[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(buffer) / 2, &buffer[9], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(buffer) / 2, &buffer[9], GL_DYNAMIC_DRAW);
 
     std::function updateFunc = [] {
 
@@ -62,7 +60,7 @@ int main()
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, game.width, game.height);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,9 +78,8 @@ int main()
 
         glDisableVertexAttribArray(0);
 
-        glfwGetWindowSize(game.GetWindow(), &width, &height);
+        glfwGetWindowSize(game.GetWindow(), &game.width, &game.height);
     };
     game.Loop(updateFunc, renderFunc);
-    game.Shutdown();
     return 0;
 }
