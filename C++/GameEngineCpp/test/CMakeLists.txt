@@ -8,3 +8,4 @@ add_executable(1.FirstShader openGL/1.FirstShader.cpp)
 target_link_libraries(1.FirstShader PRIVATE GameEngine)
 
 add_executable(logger utilities/Logger.cpp)
+target_link_libraries(logger PRIVATE GameEngine)

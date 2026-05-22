@@ -7,11 +7,12 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <queue>
 #include <atomic>
 #include <chrono>
 #include <iomanip>
 #include <vector>
+
+#include <core/RingBuffer.hpp>
 
 class Logger
 {
@@ -46,13 +47,11 @@ public:
 private:
     std::ofstream outputFile;
 
-    std::queue<Message> messageQueue;
+    RingBuffer<Message, 4096> messageQueue;
 
-    std::mutex queueMutex;
     std::mutex consoleMutex;
     std::mutex initMutex;
 
-    std::condition_variable queueCV;
     std::jthread workerThread;
     std::atomic<bool> running = false;
 
@@ -66,50 +65,37 @@ private:
             Shutdown();
     }
 
-    Logger(const Logger&) = delete;
-    Logger& operator=(const Logger&) = delete;
-
     void ProcessQueue()
     {
         auto start = GetTimestamp();
         while (running)
         {
-            std::unique_lock<std::mutex> lock(queueMutex);
-
-            queueCV.wait(lock, [this]
-            {
-                return !messageQueue.empty() || !running;
-            });
-
             while (!messageQueue.empty())
             {
-                Message msg = std::move(messageQueue.front());
-                messageQueue.pop();
-
-                lock.unlock();
+                Message msg = messageQueue.pop();
                 WriteMessage(msg);
                 auto now = GetTimestamp();
+                //only flush once a second
                 if (now != start)
                 {
                     outputFile.flush();
                     std::cout << "flushing" << std::endl;
                     start = now;
                 }
-                lock.lock();
             }
         }
     }
 
     void WriteMessage(const Message& msg)
     {
-        int len = snprintf(
+        snprintf(
             buffer,
             sizeof(buffer),
             "[%s] [Thread %d] [%s] [%s] %s",
             ToString(msg.timestamp),
             msg.threadId,
-             msg.category.c_str(),
             LevelToString(msg.level),
+            msg.category.c_str(),
             msg.text.c_str()
         );
 
@@ -179,6 +165,9 @@ public:
         return instance;
     }
 
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+
     void Initialize(const std::string& filename)
     {
         std::lock_guard<std::mutex> lock(initMutex);
@@ -202,20 +191,14 @@ public:
     void Shutdown()
     {
         auto start = std::chrono::system_clock::now();
+        std::cout << "unfinished logs: " << messageQueue.size() << std::endl;
         std::cout << "shutdown started" << std::endl;
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            running = false;
-        }
-
-        queueCV.notify_all();
+        running = false;
 
         if (workerThread.joinable())
         {
             workerThread.join();
         }
-
-
 
         if (outputFile.is_open())
         {
@@ -229,18 +212,16 @@ public:
         isShutdown = true;
     }
 
-    inline uint32_t GetThreadId()
+    static uint32_t GetThreadId()
     {
         static std::atomic<uint32_t> globalId{0};
-        static thread_local uint32_t threadId =
+        thread_local uint32_t threadId =
             globalId.fetch_add(1, std::memory_order_relaxed);
 
         return threadId;
     }
 
-    void Log(Level level,
-             const std::string& category,
-             const std::string& text)
+    void Log(Level level, const std::string& category, const std::string& text)
     {
         if (!initialized)
             return;
@@ -252,12 +233,7 @@ public:
         msg.category = category;
         msg.text = text;
 
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            messageQueue.push(std::move(msg));
-        }
-
-        queueCV.notify_one();
+        messageQueue.push(msg);
     }
 };
 
@@ -278,7 +254,7 @@ public:
 void WorkerFunction(int id)
 {
     auto start = std::chrono::system_clock::now();
-    for (int i = 0; i < 1000000; ++i)
+    for (int i = 0; i < 50000; ++i)
     {
         LOG_INFO("Gameplay", "Worker " + std::to_string(id) +
                  " processed frame " + std::to_string(i));
@@ -302,7 +278,7 @@ int main()
 
     std::vector<std::jthread> workers;
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 12; ++i)
     {
         workers.emplace_back(WorkerFunction, i);
     }
