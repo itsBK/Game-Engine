@@ -1,5 +1,8 @@
 #pragma once
 
+#include <array>
+#include <atomic>
+
 /// Multiple-Producer-Single-Consumer RingBuffer with N = 2^x
 template<typename T, size_t N>
 class RingBuffer
@@ -8,10 +11,10 @@ class RingBuffer
                   "N must be power of 2");
 
 
-    std::array<T, N> buffer;
-    std::array<bool, N> sequence;
-    std::atomic<size_t> writeHead{ 0 };
-    std::atomic<size_t> readHead{ 0 };
+    alignas(64) std::array<T, N> buffer;
+    alignas(64) std::array<bool, N> sequence;
+    alignas(64) std::atomic<size_t> writeHead{ 0 };
+    alignas(64) std::atomic<size_t> readHead{ 0 };
 
 public:
 
