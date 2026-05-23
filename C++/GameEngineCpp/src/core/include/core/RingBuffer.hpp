@@ -18,7 +18,7 @@
     #define CPU_PAUSE() ((void)0)
 #endif
 
-/// Multiple-Producer-Single-Consumer RingBuffer with N = 2^x
+/// Multi-Producer-Single-Consumer RingBuffer with N = 2^x
 template<typename T, size_t N>
 class RingBuffer
 {
@@ -42,7 +42,8 @@ public:
         while (_dataStored[pos & MASK].test())
         {
             // delaying the producers from looping endlessly when buffer is full,
-            // improves the performance by quite a lot (when stress testing at least)
+            // this improves the performance by quite a lot, when reading data one by one using pop()
+            // but does little to no effect when draining data by chunks at a time
             for (int i = 0; i < 10000; i++)
                 CPU_PAUSE();    // wait for one CPU cycle
         }
@@ -80,6 +81,34 @@ public:
         --_count;
 
         return result;
+    }
+
+    /// this method improve the performance a lot if the consumer is popping data slower than the producers are pushing it.
+    /// It still does all the safety checks to ensure the data read, is complete.
+    /// @param array fixed-size list in which the data will be saved in
+    /// @param max the maximum size of chunk to read, ideally half the size of the ring buffer or less
+    /// @return the number of items drained from the ring buffer, 0 if the buffer is empty
+    size_t drain(T* array, const size_t max)
+    {
+        size_t countToDrain = std::min(max, _count.load());
+        if (countToDrain == 0)
+            return 0;
+
+        for (size_t i = 0; i < countToDrain; ++i)
+        {
+            size_t pos = _tail++;
+            while (!_dataStored[pos & MASK].test())
+            {
+                // we rarely enter this domain so waiting only a bit is enough
+                for (int j = 0; j < 100; j++)
+                    CPU_PAUSE();
+            }
+            array[i] = _buffer[pos & MASK];
+            _dataStored[pos & MASK].clear();
+        }
+
+        _count -= countToDrain;
+        return countToDrain;
     }
 
     size_t size() const

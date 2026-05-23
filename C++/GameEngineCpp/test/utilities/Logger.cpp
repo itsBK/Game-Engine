@@ -67,21 +67,24 @@ private:
 
     void ProcessQueue()
     {
+        Message msgList[1024];
         auto start = GetTimestamp();
         while (running)
         {
-            while (!messageQueue.empty())
+            size_t count = messageQueue.drain(msgList, 1024);
+            if (count == 0)
+                std::this_thread::sleep_for(std::chrono::microseconds(1));
+
+            for (size_t i = 0; i < count; i++)
+                WriteMessage(msgList[i]);
+
+            auto now = GetTimestamp();
+            //only flush once a second
+            if (now != start)
             {
-                Message msg = messageQueue.pop();
-                WriteMessage(msg);
-                auto now = GetTimestamp();
-                //only flush once a second
-                if (now != start)
-                {
-                    outputFile.flush();
-                    std::cout << "flushing" << std::endl;
-                    start = now;
-                }
+                outputFile.flush();
+                std::cout << "flushing" << std::endl;
+                start = now;
             }
         }
     }
