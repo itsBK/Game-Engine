@@ -36,38 +36,39 @@ public:
     void push(const T& item)
     {
         // we first secure a space to write data into and increment head for other writers
-        size_t pos = _head.fetch_add(1, std::memory_order_seq_cst);
+        size_t pos = _head++;
 
         // if the buffer is already full, we risk overwriting old data before it is written, we account for that by waiting
-        while (_dataStored[pos & MASK].test(std::memory_order_seq_cst))
+        while (_dataStored[pos & MASK].test())
         {
-            // delaying the producers from looping endlessly when buffer is full, improves the performance by quite a bit (in stress testing at least)
+            // delaying the producers from looping endlessly when buffer is full,
+            // improves the performance by quite a lot (when stress testing at least)
             for (int i = 0; i < 10000; i++)
                 CPU_PAUSE();    // wait for one CPU cycle
         }
         _buffer[pos & MASK] = item;
 
         // only after writing data, we set the flag for this spot as saved
-        _dataStored[pos & MASK].test_and_set(std::memory_order_seq_cst);
-        _count.fetch_add(1, std::memory_order_seq_cst);
+        _dataStored[pos & MASK].test_and_set();
+        ++_count;
     }
 
     bool empty() const
     {
-        return _count.load(std::memory_order_seq_cst) == 0;
+        return _count == 0;
     }
 
     /// pop assumes there is new data to pop, or it blocks until new data is available (unrecommended)
     T pop()
     {
         // only one producer so no extra checks are needed
-        size_t pos = _tail.fetch_add(1, std::memory_order_seq_cst);
+        size_t pos = _tail++;
 
         // we may be reading the data before it is ready to read
         // e.g. A and B try to push, A gets stuck (descheduled) and B finishes and increments count,
         // --> we stop at A to read, but it is not ready yet)
         // we wait for the next most data slot to be done
-        while (!_dataStored[pos & MASK].test(std::memory_order_seq_cst))
+        while (!_dataStored[pos & MASK].test())
         {
             // we rarely enter this domain so waiting only a bit is enough
             for (int i = 0; i < 100; i++)
@@ -75,14 +76,14 @@ public:
         }
         T result = _buffer[pos & MASK];
 
-        _dataStored[pos & MASK].clear(std::memory_order_seq_cst);
-        _count.fetch_sub(1, std::memory_order_seq_cst);
+        _dataStored[pos & MASK].clear();
+        --_count;
 
         return result;
     }
 
     size_t size() const
     {
-        return _count.load(std::memory_order_seq_cst);
+        return _count;
     }
 };
