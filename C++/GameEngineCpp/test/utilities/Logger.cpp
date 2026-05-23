@@ -254,7 +254,7 @@ public:
 void WorkerFunction(int id)
 {
     auto start = std::chrono::system_clock::now();
-    for (int i = 0; i < 50000; ++i)
+    for (int i = 0; i < 1000000; ++i)
     {
         LOG_INFO("Gameplay", "Worker " + std::to_string(id) +
                  " processed frame " + std::to_string(i));
@@ -278,7 +278,7 @@ int main()
 
     std::vector<std::jthread> workers;
 
-    for (int i = 0; i < 12; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         workers.emplace_back(WorkerFunction, i);
     }
