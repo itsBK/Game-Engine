@@ -29,7 +29,6 @@ class RingBuffer
     alignas(64) std::array<std::atomic_flag, N> _dataStored;
     alignas(64) std::atomic<size_t> _head = { 0 };   // head is where the latest producer (writer) is
     alignas(64) std::atomic<size_t> _tail = { 0 };   // tail is where the consumer (reader) is
-    alignas(64) std::atomic<size_t> _count = { 0 };  // count of ready-to-read data
 
 public:
 
@@ -51,12 +50,11 @@ public:
 
         // only after writing data, we set the flag for this spot as saved
         _dataStored[pos & MASK].test_and_set();
-        ++_count;
     }
 
     bool empty() const
     {
-        return _count == 0;
+        return _head == _tail;
     }
 
     /// pop assumes there is new data to pop, or it blocks until new data is available (unrecommended)
@@ -72,13 +70,11 @@ public:
         while (!_dataStored[pos & MASK].test())
         {
             // we rarely enter this domain so waiting only a bit is enough
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
                 CPU_PAUSE();
         }
         T result = _buffer[pos & MASK];
-
         _dataStored[pos & MASK].clear();
-        --_count;
 
         return result;
     }
@@ -90,29 +86,33 @@ public:
     /// @return the number of items drained from the ring buffer, 0 if the buffer is empty
     size_t drain(T* array, const size_t max)
     {
-        size_t countToDrain = std::min(max, _count.load());
+        size_t countToDrain = std::min(max, size());
         if (countToDrain == 0)
             return 0;
 
+        size_t basePose = _tail;
         for (size_t i = 0; i < countToDrain; ++i)
         {
-            size_t pos = _tail++;
-            while (!_dataStored[pos & MASK].test())
+            size_t pos = basePose + i & MASK;
+            while (!_dataStored[pos].test())
             {
                 // we rarely enter this domain so waiting only a bit is enough
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < 10000; j++)
                     CPU_PAUSE();
             }
-            array[i] = _buffer[pos & MASK];
-            _dataStored[pos & MASK].clear();
+            //TODO: we could move the data at once using memcpy
+            array[i] = _buffer[pos];
         }
 
-        _count -= countToDrain;
+        _tail += countToDrain;
+        for (size_t i = 0; i < countToDrain; ++i)
+            _dataStored[basePose + i & MASK].clear();
+
         return countToDrain;
     }
 
     size_t size() const
     {
-        return _count;
+        return _head - _tail;
     }
 };

@@ -69,11 +69,15 @@ private:
     {
         Message msgList[1024];
         auto start = GetTimestamp();
-        while (running)
+        while (true)
         {
             size_t count = messageQueue.drain(msgList, 1024);
             if (count == 0)
-                std::this_thread::sleep_for(std::chrono::microseconds(1));
+            {
+                if (!running)
+                    break;
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
 
             for (size_t i = 0; i < count; i++)
                 WriteMessage(msgList[i]);
@@ -257,7 +261,7 @@ public:
 void WorkerFunction(int id)
 {
     auto start = std::chrono::system_clock::now();
-    for (int i = 0; i < 1000000; ++i)
+    for (int i = 0; i < 1'000'000; ++i)
     {
         LOG_INFO("Gameplay", "Worker " + std::to_string(id) +
                  " processed frame " + std::to_string(i));
