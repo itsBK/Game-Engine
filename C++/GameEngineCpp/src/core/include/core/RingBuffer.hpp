@@ -25,10 +25,10 @@ class RingBuffer
     static_assert((N & (N - 1)) == 0, "N must be power of 2");
     static constexpr size_t MASK = N - 1;
 
-    alignas(64) std::array<T, N> _buffer;
-    alignas(64) std::array<std::atomic_flag, N> _dataStored;
-    alignas(64) std::atomic<size_t> _head = { 0 };   // head is where the latest producer (writer) is
-    alignas(64) std::atomic<size_t> _tail = { 0 };   // tail is where the consumer (reader) is
+    std::array<T, N> _buffer;
+    std::array<std::atomic_flag, N> _dataStored;
+    std::atomic<size_t> _head = { 0 };   // head is where the latest producer (writer) is
+    std::atomic<size_t> _tail = { 0 };   // tail is where the consumer (reader) is
 
 public:
 
@@ -38,7 +38,8 @@ public:
         size_t pos = _head++;
 
         // if the buffer is already full, we risk overwriting old data before it is written, we account for that by waiting
-        while (_dataStored[pos & MASK].test())
+        auto& flag = _dataStored[pos & MASK];
+        while (flag.test())
         {
             // delaying the producers from looping endlessly when buffer is full,
             // this improves the performance by quite a lot, when reading data one by one using pop()
@@ -49,7 +50,7 @@ public:
         _buffer[pos & MASK] = item;
 
         // only after writing data, we set the flag for this spot as saved
-        _dataStored[pos & MASK].test_and_set();
+        flag.test_and_set();
     }
 
     bool empty() const
@@ -67,14 +68,15 @@ public:
         // e.g. A and B try to push, A gets stuck (descheduled) and B finishes and increments count,
         // --> we stop at A to read, but it is not ready yet)
         // we wait for the next most data slot to be done
-        while (!_dataStored[pos & MASK].test())
+        auto& flag = _dataStored[pos & MASK];
+        while (!flag.test())
         {
             // we rarely enter this domain so waiting only a bit is enough
             for (int i = 0; i < 1000; i++)
                 CPU_PAUSE();
         }
         T result = _buffer[pos & MASK];
-        _dataStored[pos & MASK].clear();
+        flag.clear();
 
         return result;
     }
@@ -93,8 +95,9 @@ public:
         size_t basePose = _tail;
         for (size_t i = 0; i < countToDrain; ++i)
         {
-            size_t pos = basePose + i & MASK;
-            while (!_dataStored[pos].test())
+            size_t pos = (basePose + i) & MASK;
+            auto& flag = _dataStored[pos];
+            while (!flag.test())
             {
                 // we rarely enter this domain so waiting only a bit is enough
                 for (int j = 0; j < 10000; j++)
@@ -106,7 +109,7 @@ public:
 
         _tail += countToDrain;
         for (size_t i = 0; i < countToDrain; ++i)
-            _dataStored[basePose + i & MASK].clear();
+            _dataStored[(basePose + i) & MASK].clear();
 
         return countToDrain;
     }

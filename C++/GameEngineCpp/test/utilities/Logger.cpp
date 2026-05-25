@@ -47,7 +47,7 @@ public:
 private:
     std::ofstream outputFile;
 
-    RingBuffer<Message, 4096> messageQueue;
+    RingBuffer<Message, 64> messageQueue;
 
     std::mutex consoleMutex;
     std::mutex initMutex;
@@ -67,15 +67,15 @@ private:
 
     void ProcessQueue()
     {
-        Message msgList[1024];
+        Message msgList[30];
         auto start = GetTimestamp();
         while (true)
         {
-            size_t count = messageQueue.drain(msgList, 1024);
+            size_t count = messageQueue.drain(msgList, 30);
             if (count == 0)
             {
                 if (!running)
-                    break;
+                    return;
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
 
@@ -177,6 +177,7 @@ public:
 
     void Initialize(const std::string& filename)
     {
+        isShutdown = false;
         std::lock_guard<std::mutex> lock(initMutex);
 
         if (initialized)
@@ -216,6 +217,7 @@ public:
         auto end = std::chrono::system_clock::now();
         auto total = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         std::cout << "shutdown finished, took: " << total.count() << std::endl;
+        initialized = false;
         isShutdown = true;
     }
 
@@ -261,7 +263,7 @@ public:
 void WorkerFunction(int id)
 {
     auto start = std::chrono::system_clock::now();
-    for (int i = 0; i < 1'000'000; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
         LOG_INFO("Gameplay", "Worker " + std::to_string(id) +
                  " processed frame " + std::to_string(i));
@@ -279,36 +281,39 @@ void WorkerFunction(int id)
 
 int main()
 {
-    auto start = std::chrono::system_clock::now();
-    Logger::Instance().Initialize("engine.log");
-    LOG_INFO("Engine", "Game engine started");
-
-    std::vector<std::jthread> workers;
-
-    for (int i = 0; i < 4; ++i)
+    for (int k = 0 ; k < 100; ++k)
     {
-        workers.emplace_back(WorkerFunction, i);
+        std::cout << "\nrun number: " << k << std::endl;
+        auto start = std::chrono::system_clock::now();
+        Logger::Instance().Initialize("engine.log");
+        LOG_INFO("Engine", "Game engine started");
+
+        std::vector<std::jthread> workers;
+
+        for (int i = 0; i < 4; ++i)
+        {
+            workers.emplace_back(WorkerFunction, i);
+        }
+
+        for (auto& thread : workers)
+        {
+            thread.join();
+        }
+
+        LOG_WARNING("Renderer", "Texture streaming nearing limit");
+        LOG_ERROR("Audio", "Failed to load sound bank");
+
+        Logger::Instance().Shutdown();
+
+        auto endShutdown = std::chrono::system_clock::now();
+        auto total =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                endShutdown - start
+            );
+        std::cout
+            << "Total runtime ms: "
+            << total.count()
+            << '\n';
     }
-
-    for (auto& thread : workers)
-    {
-        thread.join();
-    }
-
-    LOG_WARNING("Renderer", "Texture streaming nearing limit");
-    LOG_ERROR("Audio", "Failed to load sound bank");
-
-    Logger::Instance().Shutdown();
-
-    auto endShutdown = std::chrono::system_clock::now();
-    auto total =
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            endShutdown - start
-        );
-    std::cout
-        << "Total runtime ms: "
-        << total.count()
-        << '\n';
-
     return 0;
 }
