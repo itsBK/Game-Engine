@@ -8,6 +8,7 @@ add_subdirectory(3rdParty)
 add_subdirectory(src)
 
 add_library(${PROJECT_NAME} SHARED
+    src/core/Logger.cpp
     src/core/Game.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/core/include)

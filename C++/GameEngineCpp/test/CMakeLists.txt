@@ -7,5 +7,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE GameEngine)
 add_executable(1.FirstShader openGL/1.FirstShader.cpp)
 target_link_libraries(1.FirstShader PRIVATE GameEngine)
 
-add_executable(logger utilities/Logger.cpp)
+add_executable(logger utilities/LogTest.cpp)
 target_link_libraries(logger PRIVATE GameEngine)
