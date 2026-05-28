@@ -13,11 +13,11 @@ Logger::~Logger()
 
 void Logger::ProcessQueue()
 {
-    Message msgList[30];
+    Message msgList[MAX_MESSAGE_COUNT];
     auto start = GetTimestamp();
     while (true)
     {
-        size_t count = _instance.messageQueue.drain(msgList, 30);
+        size_t count = _instance.messageQueue.drain(msgList, MAX_MESSAGE_COUNT);
         if (count == 0)
         {
             if (!_instance.running)
@@ -124,11 +124,12 @@ void Logger::Initialize(const std::string& filename)
         throw std::runtime_error("Failed to open log file");
     }
 
-    _instance.workerThread = std::jthread(&Logger::ProcessQueue);
-
     _instance.isShutdown = false;
     _instance.running = true;
     _instance.initialized = true;
+
+    _instance.workerThread = std::jthread(&Logger::ProcessQueue);
+
 }
 
 void Logger::Shutdown()
@@ -176,25 +177,25 @@ void Logger::Log(Level level, const std::string& category, const std::string& te
 
 void Logger::Debug(const std::string& category, const std::string& text)
 {
-    _instance.Log(Level::Debug, category, text);
+    Log(Level::Debug, category, text);
 }
 
 void Logger::Info(const std::string& category, const std::string& text)
 {
-    _instance.Log(Level::Info, category, text);
+    Log(Level::Info, category, text);
 }
 
 void Logger::Warning(const std::string& category, const std::string& text)
 {
-    _instance.Log(Level::Warning, category, text);
+    Log(Level::Warning, category, text);
 }
 
 void Logger::Error(const std::string& category, const std::string& text)
 {
-    _instance.Log(Level::Error, category, text);
+    Log(Level::Error, category, text);
 }
 
 void Logger::Critical(const std::string& category, const std::string& text)
 {
-    _instance.Log(Level::Critical, category, text);
+    Log(Level::Critical, category, text);
 }

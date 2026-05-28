@@ -10,6 +10,8 @@
 
 class Logger
 {
+    static constexpr int MAX_MESSAGE_COUNT = 128;
+
     enum class Level
     {
         Debug,
@@ -40,7 +42,7 @@ class Logger
     static Logger _instance;
 
     std::ofstream outputFile;
-    RingBuffer<Message, 64> messageQueue;
+    RingBuffer<Message, MAX_MESSAGE_COUNT> messageQueue;
 
     std::mutex consoleMutex;
     std::mutex initMutex;

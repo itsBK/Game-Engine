@@ -3,21 +3,6 @@
 #include <array>
 #include <atomic>
 
-#if defined(__x86_64__) || defined(_M_X64) || defined(__i386)   || defined(_M_IX86)
-    #include <immintrin.h>
-    #define CPU_PAUSE() _mm_pause()
-#elif defined(__aarch64__) || defined(__arm__) || defined(_M_ARM)
-    #if defined(_MSC_VER)
-        #include <intrin.h>
-        #define CPU_PAUSE() __yield()
-    #else
-        #define CPU_PAUSE() __asm__ volatile("yield")
-    #endif
-#else
-    // Fallback for unknown architectures
-    #define CPU_PAUSE() ((void)0)
-#endif
-
 /// Multi-Producer-Single-Consumer RingBuffer with N = 2^x
 template<typename T, size_t N>
 class RingBuffer
@@ -40,13 +25,8 @@ public:
         // if the buffer is already full, we risk overwriting old data before it is written, we account for that by waiting
         auto& flag = _dataStored[pos & MASK];
         while (flag.test())
-        {
-            // delaying the producers from looping endlessly when buffer is full,
-            // this improves the performance by quite a lot, when reading data one by one using pop()
-            // but does little to no effect when draining data by chunks at a time
-            for (int i = 0; i < 10000; i++)
-                CPU_PAUSE();    // wait for one CPU cycle
-        }
+            std::this_thread::yield();
+
         _buffer[pos & MASK] = item;
 
         // only after writing data, we set the flag for this spot as saved
@@ -70,11 +50,8 @@ public:
         // we wait for the next most data slot to be done
         auto& flag = _dataStored[pos & MASK];
         while (!flag.test())
-        {
-            // we rarely enter this domain so waiting only a bit is enough
-            for (int i = 0; i < 1000; i++)
-                CPU_PAUSE();
-        }
+            std::this_thread::yield();
+
         T result = _buffer[pos & MASK];
         flag.clear();
 
@@ -98,11 +75,8 @@ public:
             size_t pos = (basePose + i) & MASK;
             auto& flag = _dataStored[pos];
             while (!flag.test())
-            {
-                // we rarely enter this domain so waiting only a bit is enough
-                for (int j = 0; j < 10000; j++)
-                    CPU_PAUSE();
-            }
+                std::this_thread::yield();
+
             //TODO: we could move the data at once using memcpy
             array[i] = _buffer[pos];
         }
